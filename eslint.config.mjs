@@ -25,13 +25,6 @@ export default [
   },
   {
     ...eslint.configs.recommended,
-    languageOptions: {
-      globals: {
-        browser: true,
-      },
-    },
-  },
-  {
     files: ['**/*.{js,ts,tsx,vue}'],
     languageOptions: {
       parser: vueParser,
@@ -42,6 +35,16 @@ export default [
         ecmaFeatures: {
           jsx: true,
         },
+      },
+      globals: {
+        browser: true,
+        dom: true,
+        // Node.js globals
+        process: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
       },
     },
     plugins: {
