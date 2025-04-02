@@ -5,7 +5,6 @@ import vue from 'eslint-plugin-vue';
 import vueParser from 'vue-eslint-parser';
 
 export default [
-  eslint.configs.recommended,
   {
     ignores: [
       '**/dist/**',
@@ -17,9 +16,23 @@ export default [
       '**/.vite/**',
       '**/generated/**',
       '**/*.min.js',
-      '**/*.d.ts'
-    ],
-    files: ['**/*.{ts,tsx,vue}'],
+      '**/*.d.ts',
+      'dist/**',
+      '**/dist',
+      '**/dist/*',
+      '**/dist/**/*'
+    ]
+  },
+  {
+    ...eslint.configs.recommended,
+    languageOptions: {
+      globals: {
+        browser: true,
+      },
+    },
+  },
+  {
+    files: ['**/*.{js,ts,tsx,vue}'],
     languageOptions: {
       parser: vueParser,
       parserOptions: {
