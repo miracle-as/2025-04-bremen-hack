@@ -12,6 +12,7 @@
     "@mdi/font": "^7.4.47",
     "firebase": "^11.6.0",
     "gsap": "^3.12.7",
+    "marked": "^15.0.7",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",
     "vuetify": "^3.8.0-beta.0"
