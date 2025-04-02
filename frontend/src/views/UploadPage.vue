@@ -1,6 +1,6 @@
 <script setup>
-import FileUpload from '../components/FileUpload.vue'
-import FileList from '../components/FileList.vue'
+import FileUpload from '../components/FileUpload.vue';
+import FileList from '../components/FileList.vue';
 </script>
 
 <template>

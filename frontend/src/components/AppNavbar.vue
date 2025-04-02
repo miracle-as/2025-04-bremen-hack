@@ -15,8 +15,8 @@ const routes = router.getRoutes();
 // Filter out any routes you don't want to show in the navbar
 const navRoutes = computed<RouteRecordRaw[]>(() => 
   routes.filter(r => 
-    r.name && !r.meta?.hideInNav
-  )
+    r.name && !r.meta?.hideInNav,
+  ),
 );
 
 // Check if a route is active

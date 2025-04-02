@@ -23,56 +23,56 @@ const colorPalette = computed<ColorInfo[]>(() => {
       name: 'Primary', 
       color: 'primary',
       hexCode: themeColors.primary,
-      rgb: hexToRgb(themeColors.primary)
+      rgb: hexToRgb(themeColors.primary),
     },
     { 
       name: 'Secondary', 
       color: 'secondary',
       hexCode: themeColors.secondary,
-      rgb: hexToRgb(themeColors.secondary) 
+      rgb: hexToRgb(themeColors.secondary), 
     },
     { 
       name: 'Accent', 
       color: 'accent',
       hexCode: themeColors.accent,
-      rgb: hexToRgb(themeColors.accent) 
+      rgb: hexToRgb(themeColors.accent), 
     },
     { 
       name: 'Error', 
       color: 'error',
       hexCode: themeColors.error,
-      rgb: hexToRgb(themeColors.error) 
+      rgb: hexToRgb(themeColors.error), 
     },
     { 
       name: 'Warning', 
       color: 'warning',
       hexCode: themeColors.warning,
-      rgb: hexToRgb(themeColors.warning) 
+      rgb: hexToRgb(themeColors.warning), 
     },
     { 
       name: 'Info', 
       color: 'info',
       hexCode: themeColors.info,
-      rgb: hexToRgb(themeColors.info) 
+      rgb: hexToRgb(themeColors.info), 
     },
     { 
       name: 'Success', 
       color: 'success',
       hexCode: themeColors.success,
-      rgb: hexToRgb(themeColors.success) 
+      rgb: hexToRgb(themeColors.success), 
     },
     {
       name: 'Surface',
       color: 'surface',
       hexCode: themeColors.surface,
-      rgb: hexToRgb(themeColors.surface)
+      rgb: hexToRgb(themeColors.surface),
     },
     {
       name: 'Background',
       color: 'background',
       hexCode: themeColors.background,
-      rgb: hexToRgb(themeColors.background)
-    }
+      rgb: hexToRgb(themeColors.background),
+    },
   ];
 });
 
