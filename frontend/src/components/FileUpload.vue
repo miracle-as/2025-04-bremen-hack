@@ -1,45 +1,64 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { storage, functions } from '../firebase'
 import { ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
 import { httpsCallable } from 'firebase/functions'
+import type { VForm } from 'vuetify/components'
 
-const formRef = ref(null)
-const form = ref({
+interface FormData {
+  employeeName: string;
+  employeeEmail: string;
+  file: File | null;
+}
+
+interface EmployeeData {
+  employeeName: string;
+  employeeEmail: string;
+  fileName: string;
+  fileUrl: string;
+}
+
+const formRef = ref<VForm | null>(null)
+const form = ref<FormData>({
   employeeName: '',
   employeeEmail: '',
   file: null
 })
-const fileUploaded = ref(false)
-const isUploading = ref(false)
-const uploadProgress = ref(0)
-const downloadURL = ref('')
-const errorMessage = ref('')
-const formValid = ref(false)
-const storeEmployeeData = httpsCallable(functions, 'storeEmployee')
+const fileUploaded = ref<boolean>(false)
+const isUploading = ref<boolean>(false)
+const uploadProgress = ref<number>(0)
+const downloadURL = ref<string>('')
+const errorMessage = ref<string>('')
+const formValid = ref<boolean>(false)
+const storeEmployeeData = httpsCallable<EmployeeData>(functions, 'storeEmployee')
 
 const nameRules = [
-  v => !!v || 'Name is required'
+  (v: string) => !!v || 'Name is required'
 ]
 
 const emailRules = [
-  v => !!v || 'Email is required',
-  v => /.+@.+\..+/.test(v) || 'Email must be valid'
+  (v: string) => !!v || 'Email is required',
+  (v: string) => /.+@.+\..+/.test(v) || 'Email must be valid'
 ]
 
 const fileRules = [
-  v => !!v || 'CV file is required'
+  (v: File | null) => !!v || 'CV file is required'
 ]
 
-function handleFileChange(event) {
-  form.value.file = event.target.files[0]
-  fileUploaded.value = false
-  uploadProgress.value = 0
-  downloadURL.value = ''
-  errorMessage.value = ''
+function handleFileChange(event: Event): void {
+  const target = event.target as HTMLInputElement;
+  if (target.files && target.files[0]) {
+    form.value.file = target.files[0]
+    fileUploaded.value = false
+    uploadProgress.value = 0
+    downloadURL.value = ''
+    errorMessage.value = ''
+  }
 }
 
-async function submitForm() {
+async function submitForm(): Promise<void> {
+  if (!formRef.value) return;
+  
   const { valid } = await formRef.value.validate()
   
   if (!valid) {
@@ -50,7 +69,7 @@ async function submitForm() {
   uploadFile()
 }
 
-function uploadFile() {
+function uploadFile(): void {
   if (!form.value.file) return
   
   // Reset states

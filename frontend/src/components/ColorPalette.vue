@@ -1,13 +1,23 @@
-<script setup>
+<script setup lang="ts">
 import { useTheme } from 'vuetify';
 import { ref, defineEmits, computed } from 'vue';
 
-const emit = defineEmits(['click:color']);
+interface ColorInfo {
+  name: string;
+  color: string;
+  hexCode: string;
+  rgb: string;
+}
+
+const emit = defineEmits<{
+  (e: 'click:color', color: string): void;
+}>();
+
 const theme = useTheme();
 const themeColors = theme.current.value.colors;
 
 // Directly use Vuetify theme colors
-const colorPalette = computed(() => {
+const colorPalette = computed<ColorInfo[]>(() => {
   return [
     { 
       name: 'Primary', 
@@ -67,7 +77,7 @@ const colorPalette = computed(() => {
 });
 
 // Function to convert hex to RGB
-function hexToRgb(hex) {
+function hexToRgb(hex: string): string {
   if (!hex) return 'N/A';
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result ? 
@@ -76,7 +86,7 @@ function hexToRgb(hex) {
 }
 
 // Copy color code to clipboard and emit event
-function copyColor(color) {
+function copyColor(color: ColorInfo): void {
   if (color && color.hexCode) {
     console.log('Emitting color:', color.hexCode);
     emit('click:color', color.hexCode);
