@@ -171,7 +171,6 @@ export default {
 html, body {
   margin: 0;
   padding: 0;
-  min-height: 100vh;
   overflow-x: hidden;
   background-color: var(--v-background-base, #fdfbe6);
 }
@@ -189,7 +188,6 @@ html, body {
 .home-page {
   position: relative;
   width: 100%;
-  min-height: 100vh;
   z-index: 1;
 }
 
