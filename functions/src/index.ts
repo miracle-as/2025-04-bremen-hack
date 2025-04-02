@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  * Import function triggers from their respective submodules:
  *
@@ -7,8 +8,9 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-import {onRequest} from "firebase-functions/v2/https";
+import {onCallGenkit, onRequest} from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
+import {menuSuggestion} from "./genkit-sample";
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
@@ -17,9 +19,9 @@ export const helloWorld = onRequest((request, response) => {
   logger.info("Hello logs!", {structuredData: true});
   response.send("Hello from Firebase!");
 });
+export const getMenuSuggestion = onCallGenkit(async (request, response) => {
+  const {subject} = request.data;
+  const result = await menuSuggestion(subject, response);
+  return result;
+});
 
-// export const menuSuggestionFlow = onCallGenkit(async (request) => {
-//   const {subject} = request.data;
-//   const result = await menuSuggestionFlow(subject);
-//   return result;
-// });
