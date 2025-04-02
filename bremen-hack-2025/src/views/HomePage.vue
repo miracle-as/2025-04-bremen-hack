@@ -1,100 +1,80 @@
-<script setup>
-import { RouterLink } from 'vue-router'
-</script>
-
 <template>
-  <div class="home-page">
-    <h1>Bremen Hack 2025</h1>
-    <p>Welcome to the Bremen Hack 2025 project</p>
-    
-    <div class="actions">
-      <RouterLink to="/upload" class="action-button">
-        Go to File Upload
-      </RouterLink>
-      <RouterLink to="/colors" class="action-button accent-red">
-        View Color Palette
-      </RouterLink>
+  <div>
+    <div class="video-background">
+      <video autoplay loop muted playsinline>
+        <source src="/hack-video-3.mp4" type="video/mp4">
+        <!-- Replace your-video-file.mp4 with your actual video file name -->
+      </video>
     </div>
+    <v-container class="text-center content-overlay">
+      <v-row justify="center">
+        <v-col>
+          <h1 class="my-12 text-h2 font-weight-bold">Bremen Hack 2025</h1>        
+          <v-row justify="center" class="mt-6">
+            <v-col cols="12" sm="auto" class="pa-2">
+              <v-btn 
+                to="/upload" 
+                color="accent" 
+              >
+                File Upload
+              </v-btn>
+            </v-col>
+            <!-- <v-col cols="12" sm="auto" class="pa-2">
+              <v-btn 
+                to="/colors" 
+                color="primary" 
+                variant="outlined"
+              >
+                Color Palette
+              </v-btn>
+            </v-col> -->
+          </v-row>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
-<style scoped>
-.home-page {
+<style>
+/* We can create a custom theme to match the original colors */
+/* :root {
+  --v-theme-primary: var(--color-primary);
+  --v-theme-primary-darken-1: var(--color-primary-dark);
+  --v-theme-secondary: var(--color-primary-light);
+  --v-theme-error: var(--color-accent-red);
+  --v-theme-warning: var(--color-accent-orange);
+  --v-theme-background: var(--color-background);
+} */
+
+.video-background {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-  text-align: center;
+  height: 100%;
+  z-index: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.video-background video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(5px) brightness(1.3); /* Added blur effect and increased brightness */
+}
+
+.content-overlay {
+  position: relative;
+  z-index: 1;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 80vh;
 }
 
-h1 {
-  font-size: clamp(2.5rem, 8vw, 4rem);
-  color: var(--color-primary-dark);
-  margin-bottom: 1rem;
-}
-
-p {
-  color: #666;
-  margin-bottom: 2rem;
-  font-size: clamp(1.2rem, 2vw, 1.5rem);
-}
-
-.actions {
-  margin-top: 2rem;
-  display: flex;
-  justify-content: center;
-  gap: clamp(0.5rem, 3vw, 1.5rem);
-  flex-wrap: wrap;
-}
-
-.action-button {
-  display: inline-block;
-  background-color: var(--color-primary);
-  color: white;
-  padding: clamp(0.75rem, 2vw, 1rem) clamp(1.25rem, 3vw, 2rem);
-  border-radius: 4px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: background-color 0.3s;
-  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
-}
-
-.action-button:hover {
-  background-color: var(--color-primary-dark);
-}
-
-.action-button.accent-red {
-  background-color: var(--color-accent-red);
-}
-
-.action-button.accent-red:hover {
-  background-color: #c0004f;
-}
-
-.action-button.accent-orange {
-  background-color: var(--color-accent-orange);
-}
-
-.action-button.accent-orange:hover {
-  background-color: #e0682c;
-}
-
-@media (max-width: 480px) {
-  .home-page {
-    padding: 1rem;
-  }
-  
-  .actions {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .action-button {
-    min-width: 80%;
-  }
+.content-overlay h1 {
+  color: black;
+  /* text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); */
 }
 </style> 

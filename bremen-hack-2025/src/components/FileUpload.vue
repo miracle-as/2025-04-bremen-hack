@@ -83,153 +83,78 @@ function uploadFile() {
 </script>
 
 <template>
-  <div class="file-upload">
-    <h2>File Upload</h2>
-    <div class="upload-container">
-      <input 
-        type="file" 
-        id="fileInput" 
+  <v-card class="pa-5">
+    <v-card-title class="d-flex align-center justify-space-between">
+      <span>File Upload</span>
+    </v-card-title>
+    
+    <v-card-text>
+      <v-file-input
+        v-model="selectedFile"
         @change="handleFileChange"
-        class="file-input"
-      />
-      <label for="fileInput" class="file-label">
-        {{ selectedFile ? selectedFile.name : 'Choose a file' }}
-      </label>
+        label="Choose a file"
+        prepend-icon="mdi-file-upload"
+        variant="outlined"
+        :disabled="isUploading"
+        :loading="isUploading"
+        class="mb-4"
+      ></v-file-input>
       
-      <button 
+      <v-progress-linear
+        v-if="isUploading"
+        v-model="uploadProgress"
+        height="10"
+        color="primary"
+        striped
+        class="mb-4"
+      ></v-progress-linear>
+      
+      <v-btn 
         @click="uploadFile" 
-        class="upload-button"
+        color="accent"
         :disabled="!selectedFile || isUploading || fileUploaded"
+        :loading="isUploading"
+        prepend-icon="mdi-cloud-upload"
       >
-        <span v-if="isUploading">Uploading... {{ uploadProgress }}%</span>
-        <span v-else-if="fileUploaded">Uploaded!</span>
-        <span v-else>Upload</span>
-      </button>
+        <template v-if="isUploading">Uploading... {{ uploadProgress }}%</template>
+        <template v-else-if="fileUploaded">Uploaded!</template>
+        <template v-else>Upload</template>
+      </v-btn>
       
-      <div v-if="isUploading" class="progress-container">
-        <div class="progress-bar" :style="{ width: uploadProgress + '%' }"></div>
-      </div>
-    </div>
-    
-    <div v-if="errorMessage" class="error-message">
-      {{ errorMessage }}
-    </div>
-    
-    <div v-if="fileUploaded" class="success-message">
-      <p>File successfully uploaded!</p>
-      <div class="download-link">
-        <a :href="downloadURL" target="_blank" rel="noopener noreferrer">View uploaded file</a>
-      </div>
-    </div>
-  </div>
+      <v-alert
+        v-if="errorMessage"
+        type="error"
+        variant="tonal"
+        class="my-3"
+      >
+        {{ errorMessage }}
+      </v-alert>
+      
+      <v-alert
+        v-if="fileUploaded"
+        type="success"
+        variant="tonal"
+        class="my-3"
+      >
+        <p>File successfully uploaded!</p>
+        <v-btn
+          v-if="downloadURL"
+          :href="downloadURL"
+          target="_blank"
+          rel="noopener noreferrer"
+          color="primary"
+          size="small"
+          variant="text"
+          prepend-icon="mdi-eye"
+          class="mt-2"
+        >
+          View uploaded file
+        </v-btn>
+      </v-alert>
+    </v-card-text>
+  </v-card>
 </template>
 
 <style scoped>
-.file-upload {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  border-radius: 8px;
-  background-color: var(--color-background-gray);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  color: var(--color-primary-dark);
-}
-
-.upload-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.file-input {
-  width: 0.1px;
-  height: 0.1px;
-  opacity: 0;
-  overflow: hidden;
-  position: absolute;
-  z-index: -1;
-}
-
-.file-label {
-  display: block;
-  padding: 0.75rem 1.25rem;
-  background-color: #e9ecef;
-  color: #495057;
-  border-radius: 4px;
-  cursor: pointer;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  transition: background-color 0.3s;
-}
-
-.file-label:hover {
-  background-color: #dee2e6;
-}
-
-.upload-button {
-  padding: 0.75rem 1.25rem;
-  background-color: var(--color-primary);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s;
-}
-
-.upload-button:hover:not(:disabled) {
-  background-color: var(--color-primary-dark);
-}
-
-.upload-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
-
-.success-message {
-  text-align: center;
-  color: var(--color-primary);
-  margin-top: 1rem;
-  font-weight: bold;
-}
-
-.error-message {
-  text-align: center;
-  color: var(--color-accent-red);
-  margin-top: 1rem;
-  font-weight: bold;
-}
-
-.progress-container {
-  width: 100%;
-  height: 10px;
-  background-color: #e0e0e0;
-  border-radius: 5px;
-  overflow: hidden;
-}
-
-.progress-bar {
-  height: 100%;
-  background-color: var(--color-primary);
-  transition: width 0.3s ease;
-}
-
-.download-link {
-  margin-top: 0.5rem;
-}
-
-.download-link a {
-  color: var(--color-primary);
-  text-decoration: underline;
-}
-
-.download-link a:hover {
-  color: var(--color-primary-dark);
-}
+/* All styling is handled by Vuetify */
 </style> 
