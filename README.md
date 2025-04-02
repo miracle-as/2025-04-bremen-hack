@@ -51,7 +51,47 @@ This repository contains our team's submission for the Bremen Hackathon 2025. We
 - Node.js (v16 or higher)
 - npm or yarn
 - Firebase CLI (`npm install -g firebase-tools`)
-- A Firebase project with services enabled
+- A Firebase account
+
+### Firebase Project Setup
+
+```bash
+# Install Firebase CLI globally if not already installed
+npm install -g firebase-tools
+
+# Login to Firebase
+firebase login
+
+# Create a new Firebase project (interactive)
+firebase projects:create
+
+# Alternatively, create with specific project ID
+# firebase projects:create --project-id YOUR_PROJECT_ID
+
+# List your Firebase projects to verify creation
+firebase projects:list
+```
+
+### Enable Firebase Services
+
+1. Visit the [Firebase Console](https://console.firebase.google.com/)
+2. Select your project
+3. Enable the required services:
+
+```bash
+# Enable Firestore
+firebase firestore:enable
+
+# Enable Authentication services 
+# First, visit the Firebase Console -> Authentication -> Sign-in method
+# Then activate your preferred auth providers (Email/Password, Google, etc.)
+
+# Enable Storage
+firebase storage:enable
+
+# Enable Functions (if needed)
+firebase functions:enable
+```
 
 ### Installation
 
@@ -65,11 +105,73 @@ cd 2025-04-bremen-hack
 # Install dependencies
 npm install
 
-# Set up Firebase configuration
-# Create a .env file with your Firebase credentials
-cp .env.example .env
+# Initialize Firebase in your project
+firebase init
 
-# Start the development server
+# Select the following features when prompted:
+# - Firestore
+# - Functions (optional)
+# - Hosting
+# - Storage
+# - Emulators (for local development)
+
+# Create a .env file for Firebase config
+cp .env.example .env
+```
+
+### Firebase Configuration in Vue
+
+Create a Firebase configuration file at `src/firebase/config.js`:
+
+```javascript
+// src/firebase/config.js
+import { initializeApp } from 'firebase/app'
+import { getFirestore } from 'firebase/firestore'
+import { getAuth } from 'firebase/auth'
+import { getStorage } from 'firebase/storage'
+
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
+}
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig)
+
+// Initialize services
+const db = getFirestore(app)
+const auth = getAuth(app)
+const storage = getStorage(app)
+
+export { db, auth, storage }
+```
+
+Create a `.env` file in the project root:
+
+```
+VITE_FIREBASE_API_KEY=your-api-key
+VITE_FIREBASE_AUTH_DOMAIN=your-project-id.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your-project-id
+VITE_FIREBASE_STORAGE_BUCKET=your-project-id.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your-messaging-sender-id
+VITE_FIREBASE_APP_ID=your-app-id
+```
+
+To get these values:
+1. Go to Firebase Console -> Project settings -> General
+2. Scroll down to "Your apps" section
+3. Click on the web app or create a new one
+4. Copy the configuration values
+
+### Start Development
+
+```bash
+# Start the development server with Firebase emulators
+firebase emulators:start
 npm run dev
 ```
 
@@ -77,28 +179,64 @@ npm run dev
 
 [Provide instructions on how to use your application]
 
-### Firebase Configuration
+### Firestore Rules
 
-Make sure to create a Firebase project and configure the following services:
-- Authentication (with your preferred providers)
-- Firestore Database
-- Storage
-- Hosting
+For secure data access, update your Firestore rules in `firestore.rules`:
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Lock down access by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    // Allow authenticated users to read public data
+    match /public/{document} {
+      allow read: if request.auth != null;
+    }
+    
+    // Allow users to read and write their own data
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
+```
+
+### Storage Rules
+
+For secure file storage, update your Storage rules in `storage.rules`:
+
+```
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
+```
 
 ### Deployment
 
 ```bash
-# Login to Firebase
-firebase login
-
-# Initialize Firebase in the project (if not already done)
-firebase init
-
 # Build the application
 npm run build
 
-# Deploy to Firebase Hosting
+# Deploy to Firebase
 firebase deploy
+
+# Deploy only specific services
+firebase deploy --only hosting
+firebase deploy --only firestore:rules
+firebase deploy --only storage:rules
+firebase deploy --only functions
+
+# View your deployed application
+firebase open hosting:site
 ```
 
 ## 🤝 Contributors
