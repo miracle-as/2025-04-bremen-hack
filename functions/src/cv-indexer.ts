@@ -161,9 +161,13 @@ export const searchCVFlow = ai.defineFlow(
     outputSchema: z.array(z.any()).describe("Search results"),
   },
   async (query: string) => {
+    const promptConfig = await db.doc("config/prompt").get();
+    const searchSummaryPrompt = promptConfig.data()?.searchSummaryPrompt;
+    const searchTemplatePrompt = promptConfig.data()?.searchTemplatePrompt as string;
+
     const docs = await ai.retrieve({
       retriever,
-      query: query,
+      query:  searchTemplatePrompt.replace('QUERY_INSERTED_HERE', query),
       options: {
         limit: 5, // Options: Return up to 5 documents
         // where: { category: 'example' }, // Optional: Filter by field-value pairs
@@ -209,7 +213,7 @@ export const searchCVFlow = ai.defineFlow(
 
       const { text } = await ai.generate({
         model: gemini("gemini-1.5-flash"),
-        prompt: `Make a short summary of the following CV`,
+        prompt: searchSummaryPrompt,
         docs: matchingDocsText,
       });
       summaries.push({
