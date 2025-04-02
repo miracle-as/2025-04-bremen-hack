@@ -111,7 +111,7 @@ onMounted(fetchFiles)
 
 <style scoped>
 .file-list {
-  max-width: 500px;
+  max-width: 1200px;
   margin: 2rem auto;
   padding: 1.5rem;
   border-radius: 8px;

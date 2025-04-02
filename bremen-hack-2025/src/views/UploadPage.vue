@@ -26,7 +26,7 @@ import FileList from '../components/FileList.vue'
 <style scoped>
 .upload-page {
   width: 100%;
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: clamp(1rem, 5vw, 2rem);
   display: flex;
