@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 import { getFunctions } from "firebase/functions";
+import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -18,8 +19,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 const functions = getFunctions(app);
+const db = getFirestore(app);
 
 // Uncomment this line if you're running Firebase Functions locally
 // connectFunctionsEmulator(functions, "localhost", 5001);
 
-export { storage, functions }; 
+export { storage, functions, db }; 
