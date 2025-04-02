@@ -13,15 +13,18 @@
   },
   "name": "functions",
   "engines": {
-    "node": "22"
+    "node": "20"
   },
   "dependencies": {
     "@genkit-ai/firebase": "^1.4.0",
     "@genkit-ai/googleai": "^1.4.0",
+    "@types/pdf-parse": "^1.1.5",
     "express": "^5.1.0",
     "firebase-admin": "^12.6.0",
     "firebase-functions": "^6.0.1",
-    "genkit": "^1.4.0"
+    "genkit": "^1.4.0",
+    "llm-chunk": "^0.0.1",
+    "pdf-parse": "^1.1.1"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.12.0",
