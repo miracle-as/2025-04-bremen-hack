@@ -1,26 +1,84 @@
 <script setup>
 import { ref } from 'vue'
+import { storage } from '../firebase'
+import { ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
 
 const selectedFile = ref(null)
 const fileUploaded = ref(false)
+const isUploading = ref(false)
+const uploadProgress = ref(0)
+const downloadURL = ref('')
+const errorMessage = ref('')
 
 function handleFileChange(event) {
   const file = event.target.files[0]
   selectedFile.value = file
   fileUploaded.value = false
+  uploadProgress.value = 0
+  downloadURL.value = ''
+  errorMessage.value = ''
 }
 
 function uploadFile() {
   if (!selectedFile.value) return
   
-  // Here you would typically send the file to a server
-  // This is a placeholder for the actual upload logic
-  console.log('Uploading file:', selectedFile.value.name)
+  // Reset states
+  isUploading.value = true
+  errorMessage.value = ''
+  downloadURL.value = ''
   
-  // Simulate successful upload
-  setTimeout(() => {
-    fileUploaded.value = true
-  }, 1000)
+  const file = selectedFile.value
+  
+  // Create a unique file name
+  const timestamp = new Date().getTime()
+  const fileName = `${timestamp}_${file.name}`
+  
+  // Create a storage reference
+  const fileStorageRef = storageRef(storage, `uploads/${fileName}`)
+  
+  // Upload the file
+  const uploadTask = uploadBytesResumable(fileStorageRef, file)
+  
+  // Register three observers:
+  // 1. 'state_changed' observer, called any time the state changes
+  // 2. Error observer, called on failure
+  // 3. Completion observer, called on successful completion
+  uploadTask.on(
+    'state_changed',
+    (snapshot) => {
+      // Observe state change events such as progress, pause, and resume
+      // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+      uploadProgress.value = Math.round(progress)
+      console.log('Upload is ' + progress + '% done')
+      
+      switch (snapshot.state) {
+        case 'paused':
+          console.log('Upload is paused')
+          break
+        case 'running':
+          console.log('Upload is running')
+          break
+      }
+    },
+    (error) => {
+      // Handle unsuccessful uploads
+      isUploading.value = false
+      errorMessage.value = `Upload failed: ${error.message}`
+      console.error('Upload error:', error)
+    },
+    () => {
+      // Handle successful uploads on complete
+      isUploading.value = false
+      fileUploaded.value = true
+      
+      // Get the download URL
+      getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+        downloadURL.value = url
+        console.log('File available at', url)
+      })
+    }
+  )
 }
 </script>
 
@@ -37,17 +95,32 @@ function uploadFile() {
       <label for="fileInput" class="file-label">
         {{ selectedFile ? selectedFile.name : 'Choose a file' }}
       </label>
+      
       <button 
         @click="uploadFile" 
         class="upload-button"
-        :disabled="!selectedFile || fileUploaded"
+        :disabled="!selectedFile || isUploading || fileUploaded"
       >
-        {{ fileUploaded ? 'Uploaded!' : 'Upload' }}
+        <span v-if="isUploading">Uploading... {{ uploadProgress }}%</span>
+        <span v-else-if="fileUploaded">Uploaded!</span>
+        <span v-else>Upload</span>
       </button>
+      
+      <div v-if="isUploading" class="progress-container">
+        <div class="progress-bar" :style="{ width: uploadProgress + '%' }"></div>
+      </div>
     </div>
-    <p v-if="fileUploaded" class="success-message">
-      File successfully uploaded!
-    </p>
+    
+    <div v-if="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+    
+    <div v-if="fileUploaded" class="success-message">
+      <p>File successfully uploaded!</p>
+      <div class="download-link">
+        <a :href="downloadURL" target="_blank" rel="noopener noreferrer">View uploaded file</a>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -124,5 +197,39 @@ h2 {
   color: var(--color-primary);
   margin-top: 1rem;
   font-weight: bold;
+}
+
+.error-message {
+  text-align: center;
+  color: var(--color-accent-red);
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.progress-container {
+  width: 100%;
+  height: 10px;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: var(--color-primary);
+  transition: width 0.3s ease;
+}
+
+.download-link {
+  margin-top: 0.5rem;
+}
+
+.download-link a {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.download-link a:hover {
+  color: var(--color-primary-dark);
 }
 </style> 

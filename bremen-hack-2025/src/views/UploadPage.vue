@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 import FileUpload from '../components/FileUpload.vue'
+import FileList from '../components/FileList.vue'
 </script>
 
 <template>
@@ -8,6 +9,8 @@ import FileUpload from '../components/FileUpload.vue'
     <h1>File Upload</h1>
     
     <FileUpload />
+    
+    <FileList />
     
     <div class="navigation">
       <RouterLink to="/" class="back-link">
