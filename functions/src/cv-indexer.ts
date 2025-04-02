@@ -68,11 +68,18 @@ const cvIndexer = ai.defineIndexer(
     // Embed documents using Gemini and store in Firestore
     await Promise.all(
       docs.map(async (doc) => {
-        const embedding = (await ai.embed({
+         const embeddingResults = await ai.embed({
             embedder: indexConfig.embedder,
             content: doc.text,
-        }))[0].embedding;
-        // const embedding = await gemini15Flash.embed(doc.text);
+        });
+
+        // ai.embed() returns an array of embedding results, but since we're processing
+        // one document at a time, we expect only one embedding vector
+        if (embeddingResults.length !== 1) {
+            throw new Error(`Expected exactly one embedding result, got ${embeddingResults.length}`);
+        }
+        const embedding = embeddingResults[0].embedding;
+
         // Store in Firestore
         await db.collection(indexConfig.collection).add({
           [indexConfig.vectorField]: FieldValue.vector(embedding),
