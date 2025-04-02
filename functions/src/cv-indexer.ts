@@ -45,6 +45,7 @@ const ai = genkit({
 const retriever = defineFirestoreRetriever(ai, {
   name: 'exampleRetriever',
   firestore: db,
+  distanceResultField: 'distance',
   collection: 'documents',
   contentField: 'text', // Field containing document content
   vectorField: 'embedding', // Field containing vector embeddings
@@ -68,13 +69,24 @@ const cvIndexer = ai.defineIndexer(
     // Embed documents using Gemini and store in Firestore
     await Promise.all(
       docs.map(async (doc) => {
-        const embedding = (await ai.embed({
+         const embeddingResults = await ai.embed({
             embedder: indexConfig.embedder,
             content: doc.text,
-        }))[0].embedding;
-        // const embedding = await gemini15Flash.embed(doc.text);
+        });
+
+        // ai.embed() returns an array of embedding results, but since we're processing
+        // one document at a time, we expect only one embedding vector
+        if (embeddingResults.length !== 1) {
+            throw new Error(`Expected exactly one embedding result, got ${embeddingResults.length}`);
+        }
+        const embedding = embeddingResults[0].embedding;
+
         // Store in Firestore
         await db.collection(indexConfig.collection).add({
+          name: doc.metadata?.name,
+          email: doc.metadata?.email,
+          fileName: doc.metadata?.fileName,
+          uploadDate: doc.metadata?.uploadDate,
           [indexConfig.vectorField]: FieldValue.vector(embedding),
           [indexConfig.contentField]: doc.text,
         })
@@ -91,15 +103,22 @@ async function extractTextFromPdf(input: Buffer) {
 export const indexCVFlow = ai.defineFlow(
   {
     name: 'indexCVFlow',
-    inputSchema: z.string().describe('PDF file path'),
+    inputSchema: z.object({
+      name: z.any().describe('Name of the cv'),
+      email: z.any().describe('Email of the cv'),
+      fileName: z.any().describe('File name of the cv'),
+      fileUrl: z.any().describe('File URL of the cv'),
+      uploadDate: z.any().describe('Upload date of the cv'),
+    }),
+    // inputSchema: z.string().describe('PDF file path'),
     outputSchema: z.void(),
   },
-  async (filePath: string) => {
+  async (employeeData: any) => {
     const storage = getStorage();
     const bucket = storage.bucket();
     
     // Download the file
-    const file = bucket.file(filePath);
+    const file = bucket.file(`uploads/${employeeData.fileName}`);
     const [fileContent] = await file.download();
 
     // Read the pdf.
@@ -114,10 +133,10 @@ export const indexCVFlow = ai.defineFlow(
 
     // Convert chunks of text into documents to store in the index.
     const documents = chunks.map((text: string) => {
-      return Document.fromText(text, { filePath });
+      return Document.fromText(text, { name: employeeData.name, email: employeeData.email, fileName: employeeData.fileName, uploadDate: employeeData.uploadDate });
     });
 
-    logger.info(`Indexing ${documents.length} documents`, documents);
+    logger.info(`Indexing ${documents.length} documents`, documents.map((doc) => doc.toJSON()));
 
     // Add documents to the Firestore index.
     await ai.index({
@@ -127,22 +146,11 @@ export const indexCVFlow = ai.defineFlow(
   }
 );
 
-const basicCVSchema = z.object({
-  name: z.string().describe('Name of the person'),
-  email: z.string().describe('Email of the person'),
-  phone: z.string().describe('Phone number of the person'),
-  address: z.string().describe('Address of the person'),
-  education: z.string().describe('Education of the person'),
-  experience: z.string().describe('Experience of the person'),
-  skills: z.string().describe('Skills of the person'),
-});
-
 export const searchCVFlow = ai.defineFlow(
   {
     name: 'searchCVFlow',
     inputSchema: z.string().describe('Search query'),
     outputSchema: z.void(),
-    // outputSchema: z.array(basicCVSchema),
   },
   async (query: string) => {
     const docs = await ai.retrieve({
@@ -154,10 +162,7 @@ export const searchCVFlow = ai.defineFlow(
         collection: 'cv-embeddings', // Optional: Override default collection
       },
     });
-    logger.info(`Found ${docs.length} documents`, docs.map((doc) => ({
-      content: doc.text,
-      metadata: doc.metadata
-    })));
+    logger.info(`Found ${docs.length} documents`, docs.map((doc) => doc.toJSON()));
   }
 );
 

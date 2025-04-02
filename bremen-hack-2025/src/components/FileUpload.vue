@@ -16,7 +16,7 @@ const uploadProgress = ref(0)
 const downloadURL = ref('')
 const errorMessage = ref('')
 const formValid = ref(false)
-const storeEmployeeData = httpsCallable(functions, 'storeEmployeeData')
+const storeEmployeeData = httpsCallable(functions, 'storeEmployee')
 
 const nameRules = [
   v => !!v || 'Name is required'
