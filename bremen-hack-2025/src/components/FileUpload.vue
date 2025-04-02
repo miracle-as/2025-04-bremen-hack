@@ -1,7 +1,8 @@
 <script setup>
 import { ref } from 'vue'
-import { storage } from '../firebase'
+import { storage, functions } from '../firebase'
 import { ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
+import { httpsCallable } from 'firebase/functions'
 
 const formRef = ref(null)
 const form = ref({
@@ -15,6 +16,7 @@ const uploadProgress = ref(0)
 const downloadURL = ref('')
 const errorMessage = ref('')
 const formValid = ref(false)
+const storeEmployeeData = httpsCallable(functions, 'storeEmployeeData')
 
 const nameRules = [
   v => !!v || 'Name is required'
@@ -106,6 +108,21 @@ function uploadFile() {
       getDownloadURL(uploadTask.snapshot.ref).then((url) => {
         downloadURL.value = url
         console.log('File available at', url)
+        
+        // Store employee data in Firestore using the Firebase function
+        storeEmployeeData({
+          employeeName: form.value.employeeName,
+          employeeEmail: form.value.employeeEmail,
+          fileName: fileName,
+          fileUrl: url
+        })
+          .then((result) => {
+            console.log('Employee data stored successfully', result.data)
+          })
+          .catch((error) => {
+            errorMessage.value = `Error storing employee data: ${error.message}`
+            console.error('Firebase function error:', error)
+          })
       })
     }
   )

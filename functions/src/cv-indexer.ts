@@ -1,25 +1,23 @@
 /* eslint-disable max-len */
+// Import Firebase Admin initialization first
+import "./firebase-admin";
+
 // Import the Genkit core libraries and plugins.
 import {genkit, z} from "genkit";
 import {googleAI, textEmbedding004} from "@genkit-ai/googleai";
 import {getStorage} from "firebase-admin/storage";
 import {FieldValue, getFirestore} from "firebase-admin/firestore";
-import {initializeApp} from "firebase-admin/app";
-import { Document } from "genkit/retriever";
-import { chunk } from 'llm-chunk';
+import {Document} from "genkit/retriever";
+import {chunk} from 'llm-chunk';
 import pdf from 'pdf-parse';
 
 import {onCallGenkit} from "firebase-functions/https";
 import {defineSecret} from "firebase-functions/params";
-import { logger } from "firebase-functions/v2";
-import { defineFirestoreRetriever } from "@genkit-ai/firebase";
+import {logger} from "firebase-functions/v2";
+import {defineFirestoreRetriever} from "@genkit-ai/firebase";
 
-// Initialize Firebase Admin
-const app = initializeApp();
-
-// Initialize Firestore
-const db = getFirestore(app);
-
+// Get Firestore instance (Firebase Admin already initialized)
+const db = getFirestore();
 
 const apiKey = defineSecret("GOOGLE_GENAI_API_KEY");
 

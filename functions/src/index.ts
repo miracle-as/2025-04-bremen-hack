@@ -8,10 +8,14 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-import { onRequest} from "firebase-functions/v2/https";
+// Import Firebase Admin initialization first
+import "./firebase-admin";
+
+import {onRequest} from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import {menuSuggestion} from "./genkit-sample";
-import { indexCV, searchCVFlow } from "./cv-indexer";
+import {indexCV, searchCVFlow} from "./cv-indexer";
+import {storeEmployeeDataFlow} from "./employee-storage";
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
@@ -32,3 +36,5 @@ export const example = menuSuggestion;
 export const CVIndexer = indexCV;
 
 export const searchCV = searchCVFlow;
+
+export const storeEmployeeData = storeEmployeeDataFlow;
