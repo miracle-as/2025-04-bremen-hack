@@ -43,9 +43,14 @@
 
 <script>
 import { gsap } from 'gsap';
+import { useTheme } from 'vuetify';
 
 export default {
   name: 'HomePage',
+  setup() {
+    const theme = useTheme();
+    return { theme };
+  },
   mounted() {
     this.initAnimations();
     this.createParticles();
@@ -93,13 +98,14 @@ export default {
       this.particlesCount = 80;
       this.particles = [];
       
-      // Color palette from vuetify.js
+      // Get colors from Vuetify theme
+      const themeColors = this.theme.current.value.colors;
       const colors = [
-        '#38939F', // primary
-        '#E00060', // accent
-        '#0092A5', // secondary
-        '#F4783C', // warning
-        '#E01D5A'  // error
+        themeColors.primary,
+        themeColors.accent,
+        themeColors.secondary,
+        themeColors.warning,
+        themeColors.error
       ];
       
       for (let i = 0; i < this.particlesCount; i++) {
