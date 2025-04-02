@@ -68,17 +68,17 @@ export default {
         opacity: 0,
         duration: 1.2,
       })
-      .from(this.$refs.tagline, {
-        y: 50,
-        opacity: 0,
-        duration: 0.8,
-      }, '-=0.6')
-      .from(this.$refs.uploadBtn, {
-        scale: 0,
-        opacity: 0,
-        duration: 0.6,
-        ease: 'back.out(1.7)',
-      }, '-=0.4');
+        .from(this.$refs.tagline, {
+          y: 50,
+          opacity: 0,
+          duration: 0.8,
+        }, '-=0.6')
+        .from(this.$refs.uploadBtn, {
+          scale: 0,
+          opacity: 0,
+          duration: 0.6,
+          ease: 'back.out(1.7)',
+        }, '-=0.4');
       
       // Continuous floating animation for title
       gsap.to(this.$refs.mainTitle, {
@@ -86,7 +86,7 @@ export default {
         duration: 2,
         repeat: -1,
         yoyo: true,
-        ease: 'sine.inOut'
+        ease: 'sine.inOut',
       });
     },
     createParticles() {
@@ -102,7 +102,7 @@ export default {
         themeColors.accent,
         themeColors.secondary,
         themeColors.warning,
-        themeColors.error
+        themeColors.error,
       ];
       
       for (let i = 0; i < this.particlesCount; i++) {
@@ -144,7 +144,7 @@ export default {
         delay: delay,
         repeat: -1,
         yoyo: true,
-        ease: 'sine.inOut'
+        ease: 'sine.inOut',
       });
     },
     animateParticles() {
@@ -152,8 +152,8 @@ export default {
     },
     handleResize() {
       // Update particle positions on window resize if needed
-    }
-  }
+    },
+  },
 };
 </script>
 

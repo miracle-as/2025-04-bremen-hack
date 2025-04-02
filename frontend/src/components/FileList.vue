@@ -1,89 +1,96 @@
-<script setup>
-import { ref, onMounted } from 'vue'
-import { storage } from '../firebase'
-import { ref as storageRef, listAll, getDownloadURL, deleteObject } from 'firebase/storage'
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { storage } from '../firebase';
+import { ref as storageRef, listAll, getDownloadURL, deleteObject, StorageReference } from 'firebase/storage';
 
-const files = ref([])
-const loading = ref(true)
-const error = ref(null)
-const deleteDialog = ref(false)
-const fileToDelete = ref(null)
+interface FileItem {
+  name: string;
+  fullPath: string;
+  url: string;
+  ref: StorageReference;
+}
+
+const files = ref<FileItem[]>([]);
+const loading = ref<boolean>(true);
+const error = ref<string | null>(null);
+const deleteDialog = ref<boolean>(false);
+const fileToDelete = ref<FileItem | null>(null);
 
 // Function to fetch files from Firebase Storage
-async function fetchFiles() {
-  loading.value = true
-  error.value = null
-  files.value = []
+async function fetchFiles(): Promise<void> {
+  loading.value = true;
+  error.value = null;
+  files.value = [];
   
   try {
-    const listRef = storageRef(storage, 'uploads/')
-    const res = await listAll(listRef)
+    const listRef = storageRef(storage, 'uploads/');
+    const res = await listAll(listRef);
     
     // Process each item
     const filePromises = res.items.map(async (itemRef) => {
       try {
-        const url = await getDownloadURL(itemRef)
-        const name = itemRef.name
+        const url = await getDownloadURL(itemRef);
+        const name = itemRef.name;
         // Extract the original file name (remove timestamp prefix)
-        const originalName = name.substring(name.indexOf('_') + 1)
+        const originalName = name.substring(name.indexOf('_') + 1);
         return {
           name: originalName,
           fullPath: itemRef.fullPath,
           url,
           ref: itemRef,
-        }
+        };
       } catch (err) {
-        console.error("Error getting download URL for item", itemRef.name, err)
-        return null
+        console.error('Error getting download URL for item', itemRef.name, err);
+        return null;
       }
-    })
+    });
     
     // Wait for all promises to resolve
-    const fileResults = await Promise.all(filePromises)
+    const fileResults = await Promise.all(filePromises);
     // Filter out any nulls (failed downloads)
-    files.value = fileResults.filter(file => file !== null)
+    files.value = fileResults.filter((file): file is FileItem => file !== null);
     
     // Sort by newest (assumes timestamp_filename format)
     files.value.sort((a, b) => {
-      const aTime = parseInt(a.fullPath.split('/')[1].split('_')[0])
-      const bTime = parseInt(b.fullPath.split('/')[1].split('_')[0])
-      return bTime - aTime // Descending order (newest first)
-    })
+      const aTime = parseInt(a.fullPath.split('/')[1].split('_')[0]);
+      const bTime = parseInt(b.fullPath.split('/')[1].split('_')[0]);
+      return bTime - aTime; // Descending order (newest first)
+    });
     
   } catch (err) {
-    console.error("Error fetching files:", err)
-    error.value = "Failed to load files. Please try again later."
+    console.error('Error fetching files:', err);
+    error.value = 'Failed to load files. Please try again later.';
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 // Function to open the delete confirmation dialog
-function confirmDelete(file) {
-  fileToDelete.value = file
-  deleteDialog.value = true
+function confirmDelete(file: FileItem): void {
+  fileToDelete.value = file;
+  deleteDialog.value = true;
 }
 
 // Function to delete a file
-async function deleteFile() {
-  if (!fileToDelete.value) return
+async function deleteFile(): Promise<void> {
+  if (!fileToDelete.value) return;
   
   try {
-    await deleteObject(fileToDelete.value.ref)
+    await deleteObject(fileToDelete.value.ref);
     // Remove from the list
-    files.value = files.value.filter(f => f.fullPath !== fileToDelete.value.fullPath)
+    files.value = files.value.filter(f => f.fullPath !== fileToDelete.value?.fullPath);
     // Show a success snackbar or message if needed
   } catch (err) {
-    console.error("Error deleting file:", err)
-    error.value = `Failed to delete ${fileToDelete.value.name}. Please try again.`
+    console.error('Error deleting file:', err);
+    error.value = `Failed to delete ${fileToDelete.value.name}. Please try again.`;
   } finally {
-    deleteDialog.value = false
-    fileToDelete.value = null
+    deleteDialog.value = false;
+    fileToDelete.value = null;
   }
 }
 
 // Load files when component is mounted
-onMounted(fetchFiles)
+onMounted(fetchFiles);
 </script>
 
 <template>

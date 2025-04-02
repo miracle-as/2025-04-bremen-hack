@@ -1,23 +1,23 @@
-/* eslint-disable max-len */
+ 
 // Import the Genkit core libraries and plugins.
-import {genkit, z} from "genkit";
-import {googleAI} from "@genkit-ai/googleai";
+import {genkit, z} from 'genkit';
+import {googleAI} from '@genkit-ai/googleai';
 
 // Import models from the Google AI plugin. The Google AI API provides access to
 // several generative models. Here, we import Gemini 1.5 Flash.
-import {gemini15Flash} from "@genkit-ai/googleai";
+import {gemini15Flash} from '@genkit-ai/googleai';
 
 // Cloud Functions for Firebase supports Genkit natively. The onCallGenkit function creates a callable
 // function from a Genkit action. It automatically implements streaming if your flow does.
 // The https library also has other utility methods such as hasClaim, which verifies that
 // a caller's token has a specific claim (optionally matching a specific value)
-import {onCallGenkit} from "firebase-functions/https";
+import {onCallGenkit} from 'firebase-functions/https';
 
 // Genkit models generally depend on an API key. APIs should be stored in Cloud Secret Manager so that
 // access to these sensitive values can be controlled. defineSecret does this for you automatically.
 // If you are using Google generative AI you can get an API key at https://aistudio.google.com/app/apikey
-import {defineSecret} from "firebase-functions/params";
-const apiKey = defineSecret("GOOGLE_GENAI_API_KEY");
+import {defineSecret} from 'firebase-functions/params';
+const apiKey = defineSecret('GOOGLE_GENAI_API_KEY');
 
 const ai = genkit({
   plugins: [
@@ -32,8 +32,8 @@ const ai = genkit({
 // Define a simple flow that prompts an LLM to generate menu suggestions.
 const menuSuggestionFlow = ai.defineFlow(
   {
-    name: "menuSuggestionFlow",
-    inputSchema: z.string().describe("A restaurant theme").default("seafood"),
+    name: 'menuSuggestionFlow',
+    inputSchema: z.string().describe('A restaurant theme').default('seafood'),
     outputSchema: z.string(),
     streamSchema: z.string(),
   },
@@ -57,7 +57,7 @@ const menuSuggestionFlow = ai.defineFlow(
     // response into structured output or chain the response into another
     // LLM call, etc.
     return (await response).text;
-  }
+  },
 );
 
 export const menuSuggestion = onCallGenkit(
@@ -74,5 +74,5 @@ export const menuSuggestion = onCallGenkit(
     // Grant access to the API key to this function:
     secrets: [apiKey],
   },
-  menuSuggestionFlow
+  menuSuggestionFlow,
 );

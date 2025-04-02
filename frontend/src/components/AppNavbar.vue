@@ -1,10 +1,10 @@
-<script setup>
+<script setup lang="ts">
 // Navbar component with navigation links
 import { ref, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute, useRouter, RouteRecordRaw } from 'vue-router';
 import { useTheme } from 'vuetify';
 
-const drawer = ref(false);
+const drawer = ref<boolean>(false);
 const route = useRoute();
 const router = useRouter();
 const theme = useTheme();
@@ -13,15 +13,21 @@ const theme = useTheme();
 const routes = router.getRoutes();
 
 // Filter out any routes you don't want to show in the navbar
-const navRoutes = computed(() => 
+const navRoutes = computed<RouteRecordRaw[]>(() => 
   routes.filter(r => 
-    r.name && !r.meta?.hideInNav
-  )
+    r.name && !r.meta?.hideInNav,
+  ),
 );
 
 // Check if a route is active
-const isActive = (path) => {
+const isActive = (path: string): boolean => {
   return route.path === path;
+};
+
+// Format route name for display
+const formatRouteName = (name: string | symbol): string => {
+  const nameStr = String(name);
+  return nameStr.charAt(0).toUpperCase() + nameStr.slice(1);
 };
 </script>
 
@@ -44,7 +50,7 @@ const isActive = (path) => {
             :to="route.path"
             :class="['nav-link', { 'active': isActive(route.path) }]"
           >
-            {{ route.name.charAt(0).toUpperCase() + route.name.slice(1) }}
+            {{ formatRouteName(route.name) }}
           </router-link>
         </div>
         
@@ -87,7 +93,7 @@ const isActive = (path) => {
           class="mb-1"
         >
           <v-list-item-title>
-            {{ route.name.charAt(0).toUpperCase() + route.name.slice(1) }}
+            {{ formatRouteName(route.name) }}
           </v-list-item-title>
         </v-list-item>
       </v-list>

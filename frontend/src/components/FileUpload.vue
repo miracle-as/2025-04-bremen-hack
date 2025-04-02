@@ -1,75 +1,94 @@
-<script setup>
-import { ref } from 'vue'
-import { storage, functions } from '../firebase'
-import { ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
-import { httpsCallable } from 'firebase/functions'
+<script setup lang="ts">
+import { ref } from 'vue';
+import { storage, functions } from '../firebase';
+import { ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { httpsCallable } from 'firebase/functions';
+import type { VForm } from 'vuetify/components';
 
-const formRef = ref(null)
-const form = ref({
+interface FormData {
+  employeeName: string;
+  employeeEmail: string;
+  file: File | null;
+}
+
+interface EmployeeData {
+  employeeName: string;
+  employeeEmail: string;
+  fileName: string;
+  fileUrl: string;
+}
+
+const formRef = ref<VForm | null>(null);
+const form = ref<FormData>({
   employeeName: '',
   employeeEmail: '',
-  file: null
-})
-const fileUploaded = ref(false)
-const isUploading = ref(false)
-const uploadProgress = ref(0)
-const downloadURL = ref('')
-const errorMessage = ref('')
-const formValid = ref(false)
-const storeEmployeeData = httpsCallable(functions, 'storeEmployee')
+  file: null,
+});
+const fileUploaded = ref<boolean>(false);
+const isUploading = ref<boolean>(false);
+const uploadProgress = ref<number>(0);
+const downloadURL = ref<string>('');
+const errorMessage = ref<string>('');
+const formValid = ref<boolean>(false);
+const storeEmployeeData = httpsCallable<EmployeeData>(functions, 'storeEmployee');
 
 const nameRules = [
-  v => !!v || 'Name is required'
-]
+  (v: string) => !!v || 'Name is required',
+];
 
 const emailRules = [
-  v => !!v || 'Email is required',
-  v => /.+@.+\..+/.test(v) || 'Email must be valid'
-]
+  (v: string) => !!v || 'Email is required',
+  (v: string) => /.+@.+\..+/.test(v) || 'Email must be valid',
+];
 
 const fileRules = [
-  v => !!v || 'CV file is required'
-]
+  (v: File | null) => !!v || 'CV file is required',
+];
 
-function handleFileChange(event) {
-  form.value.file = event.target.files[0]
-  fileUploaded.value = false
-  uploadProgress.value = 0
-  downloadURL.value = ''
-  errorMessage.value = ''
+function handleFileChange(event: Event): void {
+  const target = event.target as HTMLInputElement;
+  if (target.files && target.files[0]) {
+    form.value.file = target.files[0];
+    fileUploaded.value = false;
+    uploadProgress.value = 0;
+    downloadURL.value = '';
+    errorMessage.value = '';
+  }
 }
 
-async function submitForm() {
-  const { valid } = await formRef.value.validate()
+async function submitForm(): Promise<void> {
+  if (!formRef.value) return;
+  
+  const { valid } = await formRef.value.validate();
   
   if (!valid) {
-    errorMessage.value = 'Please fill all required fields correctly'
-    return
+    errorMessage.value = 'Please fill all required fields correctly';
+    return;
   }
   
-  uploadFile()
+  uploadFile();
 }
 
-function uploadFile() {
-  if (!form.value.file) return
+function uploadFile(): void {
+  if (!form.value.file) return;
   
   // Reset states
-  isUploading.value = true
-  errorMessage.value = ''
-  downloadURL.value = ''
+  isUploading.value = true;
+  errorMessage.value = '';
+  downloadURL.value = '';
   
-  const file = form.value.file
+  const file = form.value.file;
   
   // Create a unique file name that includes employee name
-  const timestamp = new Date().getTime()
-  const sanitizedName = form.value.employeeName.replace(/\s+/g, '_').toLowerCase()
-  const fileName = `${timestamp}_${sanitizedName}_${file.name}`
+  const timestamp = new Date().getTime();
+  const sanitizedName = form.value.employeeName.replace(/\s+/g, '_').toLowerCase();
+  const fileName = `${timestamp}_${sanitizedName}_${file.name}`;
   
   // Create a storage reference
-  const fileStorageRef = storageRef(storage, `uploads/${fileName}`)
+  const fileStorageRef = storageRef(storage, `uploads/${fileName}`);
   
   // Upload the file
-  const uploadTask = uploadBytesResumable(fileStorageRef, file)
+  const uploadTask = uploadBytesResumable(fileStorageRef, file);
   
   // Register three observers:
   // 1. 'state_changed' observer, called any time the state changes
@@ -80,52 +99,52 @@ function uploadFile() {
     (snapshot) => {
       // Observe state change events such as progress, pause, and resume
       // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-      uploadProgress.value = Math.round(progress)
-      console.log('Upload is ' + progress + '% done')
+      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      uploadProgress.value = Math.round(progress);
+      console.log('Upload is ' + progress + '% done');
       
       switch (snapshot.state) {
-        case 'paused':
-          console.log('Upload is paused')
-          break
-        case 'running':
-          console.log('Upload is running')
-          break
+      case 'paused':
+        console.log('Upload is paused');
+        break;
+      case 'running':
+        console.log('Upload is running');
+        break;
       }
     },
     (error) => {
       // Handle unsuccessful uploads
-      isUploading.value = false
-      errorMessage.value = `Upload failed: ${error.message}`
-      console.error('Upload error:', error)
+      isUploading.value = false;
+      errorMessage.value = `Upload failed: ${error.message}`;
+      console.error('Upload error:', error);
     },
     () => {
       // Handle successful uploads on complete
-      isUploading.value = false
-      fileUploaded.value = true
+      isUploading.value = false;
+      fileUploaded.value = true;
       
       // Get the download URL
       getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-        downloadURL.value = url
-        console.log('File available at', url)
+        downloadURL.value = url;
+        console.log('File available at', url);
         
         // Store employee data in Firestore using the Firebase function
         storeEmployeeData({
           employeeName: form.value.employeeName,
           employeeEmail: form.value.employeeEmail,
           fileName: fileName,
-          fileUrl: url
+          fileUrl: url,
         })
           .then((result) => {
-            console.log('Employee data stored successfully', result.data)
+            console.log('Employee data stored successfully', result.data);
           })
           .catch((error) => {
-            errorMessage.value = `Error storing employee data: ${error.message}`
-            console.error('Firebase function error:', error)
-          })
-      })
-    }
-  )
+            errorMessage.value = `Error storing employee data: ${error.message}`;
+            console.error('Firebase function error:', error);
+          });
+      });
+    },
+  );
 }
 </script>
 

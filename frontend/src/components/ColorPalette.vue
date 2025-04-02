@@ -1,73 +1,83 @@
-<script setup>
+<script setup lang="ts">
 import { useTheme } from 'vuetify';
 import { ref, defineEmits, computed } from 'vue';
 
-const emit = defineEmits(['click:color']);
+interface ColorInfo {
+  name: string;
+  color: string;
+  hexCode: string;
+  rgb: string;
+}
+
+const emit = defineEmits<{
+  (e: 'click:color', color: string): void;
+}>();
+
 const theme = useTheme();
 const themeColors = theme.current.value.colors;
 
 // Directly use Vuetify theme colors
-const colorPalette = computed(() => {
+const colorPalette = computed<ColorInfo[]>(() => {
   return [
     { 
       name: 'Primary', 
       color: 'primary',
       hexCode: themeColors.primary,
-      rgb: hexToRgb(themeColors.primary)
+      rgb: hexToRgb(themeColors.primary),
     },
     { 
       name: 'Secondary', 
       color: 'secondary',
       hexCode: themeColors.secondary,
-      rgb: hexToRgb(themeColors.secondary) 
+      rgb: hexToRgb(themeColors.secondary), 
     },
     { 
       name: 'Accent', 
       color: 'accent',
       hexCode: themeColors.accent,
-      rgb: hexToRgb(themeColors.accent) 
+      rgb: hexToRgb(themeColors.accent), 
     },
     { 
       name: 'Error', 
       color: 'error',
       hexCode: themeColors.error,
-      rgb: hexToRgb(themeColors.error) 
+      rgb: hexToRgb(themeColors.error), 
     },
     { 
       name: 'Warning', 
       color: 'warning',
       hexCode: themeColors.warning,
-      rgb: hexToRgb(themeColors.warning) 
+      rgb: hexToRgb(themeColors.warning), 
     },
     { 
       name: 'Info', 
       color: 'info',
       hexCode: themeColors.info,
-      rgb: hexToRgb(themeColors.info) 
+      rgb: hexToRgb(themeColors.info), 
     },
     { 
       name: 'Success', 
       color: 'success',
       hexCode: themeColors.success,
-      rgb: hexToRgb(themeColors.success) 
+      rgb: hexToRgb(themeColors.success), 
     },
     {
       name: 'Surface',
       color: 'surface',
       hexCode: themeColors.surface,
-      rgb: hexToRgb(themeColors.surface)
+      rgb: hexToRgb(themeColors.surface),
     },
     {
       name: 'Background',
       color: 'background',
       hexCode: themeColors.background,
-      rgb: hexToRgb(themeColors.background)
-    }
+      rgb: hexToRgb(themeColors.background),
+    },
   ];
 });
 
 // Function to convert hex to RGB
-function hexToRgb(hex) {
+function hexToRgb(hex: string): string {
   if (!hex) return 'N/A';
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result ? 
@@ -76,7 +86,7 @@ function hexToRgb(hex) {
 }
 
 // Copy color code to clipboard and emit event
-function copyColor(color) {
+function copyColor(color: ColorInfo): void {
   if (color && color.hexCode) {
     console.log('Emitting color:', color.hexCode);
     emit('click:color', color.hexCode);
