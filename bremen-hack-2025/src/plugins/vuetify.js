@@ -4,7 +4,6 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 
-// Define the Bremen Hack colors from the base.css
 const bremenHackColors = {
   primary: '#38939F',     // --primary
   accent: '#E00060',      // --accent

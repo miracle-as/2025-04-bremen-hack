@@ -31,13 +31,7 @@ const isActive = (path) => {
     <v-app-bar app color="appBar" elevation="0" class="border-b">
       <v-container class="py-0 fill-height">
         <router-link to="/" class="text-decoration-none d-flex align-center">
-          <v-avatar size="36" color="primary" class="mr-2">
-            <span class="text-h6 font-weight-bold text-white">A</span>
-          </v-avatar>
-          <v-app-bar-title class="logo-text">
-            <span class="font-weight-bold">AI-</span>
-            <span class="font-weight-medium">HackDay</span>
-          </v-app-bar-title>
+          <img src="/knowit_logo.svg" alt="Knowit Logo" class="knowit-logo mr-2" />
         </router-link>
         
         <v-spacer></v-spacer>
@@ -73,9 +67,7 @@ const isActive = (path) => {
       <v-list>
         <v-list-item class="pa-4">
           <template v-slot:prepend>
-            <v-avatar color="primary" class="mr-3">
-              <span class="text-h6 font-weight-bold text-white">A</span>
-            </v-avatar>
+            <img src="/knowit_logo.svg" alt="Knowit Logo" class="knowit-logo-drawer mr-3" />
           </template>
           <v-list-item-title class="text-h6">AI-HackDay</v-list-item-title>
           <v-list-item-subtitle>2025</v-list-item-subtitle>
@@ -119,6 +111,17 @@ const isActive = (path) => {
 <style scoped>
 .border-b {
   border-bottom: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+}
+
+.knowit-logo {
+  height: 24px;
+  width: auto;
+  margin-right: 12px;
+}
+
+.knowit-logo-drawer {
+  height: 28px;
+  width: auto;
 }
 
 .logo-text {
