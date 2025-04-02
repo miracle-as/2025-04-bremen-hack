@@ -1,12 +1,12 @@
 // Import Firebase Admin initialization first
-import "./firebase-admin";
+import './firebase-admin';
 
-import {onCall} from "firebase-functions/v2/https";
-import * as logger from "firebase-functions/logger";
-import { indexCVFlow } from "./cv-indexer";
-import { defineSecret } from "firebase-functions/params";
+import {onCall} from 'firebase-functions/v2/https';
+import * as logger from 'firebase-functions/logger';
+import { indexCVFlow } from './cv-indexer';
+import { defineSecret } from 'firebase-functions/params';
 
-const apiKey = defineSecret("GOOGLE_GENAI_API_KEY");
+const apiKey = defineSecret('GOOGLE_GENAI_API_KEY');
 
 // Function to store employee data in Firestore
 export const storeEmployeeData = onCall(
@@ -18,7 +18,7 @@ export const storeEmployeeData = onCall(
       const {employeeName, employeeEmail, fileName, fileUrl} = request.data;
       
       if (!employeeName || !employeeEmail || !fileName || !fileUrl) {
-        throw new Error("Missing required fields");
+        throw new Error('Missing required fields');
       }
       
       const employeeData = {
@@ -31,12 +31,12 @@ export const storeEmployeeData = onCall(
   
       await indexCVFlow(employeeData);
       
-      logger.info("Employee data stored successfully", {
+      logger.info('Employee data stored successfully', {
         employeeName,
         fileName,
       });
     } catch (error) {
-      logger.error("Error storing employee data", error);
+      logger.error('Error storing employee data', error);
       throw new Error(`Failed to store employee data: ${(error as Error).message}`);
     }
   });

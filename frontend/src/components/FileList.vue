@@ -1,16 +1,23 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { storage } from '../firebase'
-import { ref as storageRef, listAll, getDownloadURL, deleteObject } from 'firebase/storage'
+import { ref as storageRef, listAll, getDownloadURL, deleteObject, StorageReference } from 'firebase/storage'
 
-const files = ref([])
-const loading = ref(true)
-const error = ref(null)
-const deleteDialog = ref(false)
-const fileToDelete = ref(null)
+interface FileItem {
+  name: string;
+  fullPath: string;
+  url: string;
+  ref: StorageReference;
+}
+
+const files = ref<FileItem[]>([])
+const loading = ref<boolean>(true)
+const error = ref<string | null>(null)
+const deleteDialog = ref<boolean>(false)
+const fileToDelete = ref<FileItem | null>(null)
 
 // Function to fetch files from Firebase Storage
-async function fetchFiles() {
+async function fetchFiles(): Promise<void> {
   loading.value = true
   error.value = null
   files.value = []
@@ -41,7 +48,7 @@ async function fetchFiles() {
     // Wait for all promises to resolve
     const fileResults = await Promise.all(filePromises)
     // Filter out any nulls (failed downloads)
-    files.value = fileResults.filter(file => file !== null)
+    files.value = fileResults.filter((file): file is FileItem => file !== null)
     
     // Sort by newest (assumes timestamp_filename format)
     files.value.sort((a, b) => {
@@ -59,19 +66,19 @@ async function fetchFiles() {
 }
 
 // Function to open the delete confirmation dialog
-function confirmDelete(file) {
+function confirmDelete(file: FileItem): void {
   fileToDelete.value = file
   deleteDialog.value = true
 }
 
 // Function to delete a file
-async function deleteFile() {
+async function deleteFile(): Promise<void> {
   if (!fileToDelete.value) return
   
   try {
     await deleteObject(fileToDelete.value.ref)
     // Remove from the list
-    files.value = files.value.filter(f => f.fullPath !== fileToDelete.value.fullPath)
+    files.value = files.value.filter(f => f.fullPath !== fileToDelete.value?.fullPath)
     // Show a success snackbar or message if needed
   } catch (err) {
     console.error("Error deleting file:", err)
