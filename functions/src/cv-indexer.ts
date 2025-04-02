@@ -1,40 +1,40 @@
-/* eslint-disable max-len */
+ 
 // Import Firebase Admin initialization first
-import "./firebase-admin";
+import './firebase-admin';
 
 // Import the Genkit core libraries and plugins.
-import {genkit, z} from "genkit";
-import {googleAI, textEmbedding004} from "@genkit-ai/googleai";
-import {getStorage} from "firebase-admin/storage";
-import {FieldValue, getFirestore} from "firebase-admin/firestore";
-import {Document} from "genkit/retriever";
+import {genkit, z} from 'genkit';
+import {googleAI, textEmbedding004} from '@genkit-ai/googleai';
+import {getStorage} from 'firebase-admin/storage';
+import {FieldValue, getFirestore} from 'firebase-admin/firestore';
+import {Document} from 'genkit/retriever';
 import {chunk} from 'llm-chunk';
 import pdf from 'pdf-parse';
 
-import {onCallGenkit} from "firebase-functions/https";
-import {defineSecret} from "firebase-functions/params";
-import {logger} from "firebase-functions/v2";
-import {defineFirestoreRetriever} from "@genkit-ai/firebase";
+import {onCallGenkit} from 'firebase-functions/https';
+import {defineSecret} from 'firebase-functions/params';
+import {logger} from 'firebase-functions/v2';
+import {defineFirestoreRetriever} from '@genkit-ai/firebase';
 
 // Get Firestore instance (Firebase Admin already initialized)
 const db = getFirestore();
 
-const apiKey = defineSecret("GOOGLE_GENAI_API_KEY");
+const apiKey = defineSecret('GOOGLE_GENAI_API_KEY');
 
 const chunkingConfig = {
-    minLength: 1000,
-    maxLength: 2000,
-    splitter: 'sentence',
-    overlap: 100,
-    delimiters: '',
-  } as any;
+  minLength: 1000,
+  maxLength: 2000,
+  splitter: 'sentence',
+  overlap: 100,
+  delimiters: '',
+} as any;
 
 const indexConfig = {
-    collection: 'cv-embeddings',
-    contentField: 'text',
-    vectorField: 'embedding',
-    embedder: textEmbedding004,
-}
+  collection: 'cv-embeddings',
+  contentField: 'text',
+  vectorField: 'embedding',
+  embedder: textEmbedding004,
+};
 
 const ai = genkit({
   plugins: [
@@ -69,15 +69,15 @@ const cvIndexer = ai.defineIndexer(
     // Embed documents using Gemini and store in Firestore
     await Promise.all(
       docs.map(async (doc) => {
-         const embeddingResults = await ai.embed({
-            embedder: indexConfig.embedder,
-            content: doc.text,
+        const embeddingResults = await ai.embed({
+          embedder: indexConfig.embedder,
+          content: doc.text,
         });
 
         // ai.embed() returns an array of embedding results, but since we're processing
         // one document at a time, we expect only one embedding vector
         if (embeddingResults.length !== 1) {
-            throw new Error(`Expected exactly one embedding result, got ${embeddingResults.length}`);
+          throw new Error(`Expected exactly one embedding result, got ${embeddingResults.length}`);
         }
         const embedding = embeddingResults[0].embedding;
 
@@ -89,10 +89,10 @@ const cvIndexer = ai.defineIndexer(
           uploadDate: doc.metadata?.uploadDate,
           [indexConfig.vectorField]: FieldValue.vector(embedding),
           [indexConfig.contentField]: doc.text,
-        })
-      })
+        });
+      }),
     );
-  }
+  },
 );
 
 async function extractTextFromPdf(input: Buffer) {
@@ -123,12 +123,12 @@ export const indexCVFlow = ai.defineFlow(
 
     // Read the pdf.
     const pdfTxt = await ai.run('extract-text', () =>
-      extractTextFromPdf(fileContent)
+      extractTextFromPdf(fileContent),
     );
 
     // Divide the pdf text into segments.
     const chunks = await ai.run('chunk-it', async () =>
-      chunk(pdfTxt, chunkingConfig)
+      chunk(pdfTxt, chunkingConfig),
     );
 
     // Convert chunks of text into documents to store in the index.
@@ -143,7 +143,7 @@ export const indexCVFlow = ai.defineFlow(
       indexer: cvIndexer,
       documents,
     });
-  }
+  },
 );
 
 export const searchCVFlow = ai.defineFlow(
@@ -163,19 +163,19 @@ export const searchCVFlow = ai.defineFlow(
       },
     });
     logger.info(`Found ${docs.length} documents`, docs.map((doc) => doc.toJSON()));
-  }
+  },
 );
 
 export const indexCV = onCallGenkit(
   {
     secrets: [apiKey],
   },
-  indexCVFlow
+  indexCVFlow,
 );
 
 export const searchCV = onCallGenkit(
   {
     secrets: [apiKey],
   },
-  searchCVFlow
+  searchCVFlow,
 );
