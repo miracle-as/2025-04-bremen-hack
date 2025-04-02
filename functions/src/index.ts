@@ -8,7 +8,7 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-import {onCallGenkit, onRequest} from "firebase-functions/v2/https";
+import { onRequest} from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import {menuSuggestion} from "./genkit-sample";
 
@@ -19,9 +19,11 @@ export const helloWorld = onRequest((request, response) => {
   logger.info("Hello logs!", {structuredData: true});
   response.send("Hello from Firebase!");
 });
-export const getMenuSuggestion = onCallGenkit(async (request, response) => {
-  const {subject} = request.data;
-  const result = await menuSuggestion(subject, response);
-  return result;
-});
 
+// export const getMenuSuggestion = onCallGenkit(async (request, response) => {
+//   const {subject} = request.data;
+//   const result = await menuSuggestion(subject, response);
+//   return result;
+// });
+
+export const example = menuSuggestion;
