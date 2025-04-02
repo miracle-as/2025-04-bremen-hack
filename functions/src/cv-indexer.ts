@@ -127,11 +127,22 @@ export const indexCVFlow = ai.defineFlow(
   }
 );
 
+const basicCVSchema = z.object({
+  name: z.string().describe('Name of the person'),
+  email: z.string().describe('Email of the person'),
+  phone: z.string().describe('Phone number of the person'),
+  address: z.string().describe('Address of the person'),
+  education: z.string().describe('Education of the person'),
+  experience: z.string().describe('Experience of the person'),
+  skills: z.string().describe('Skills of the person'),
+});
+
 export const searchCVFlow = ai.defineFlow(
   {
     name: 'searchCVFlow',
     inputSchema: z.string().describe('Search query'),
     outputSchema: z.void(),
+    // outputSchema: z.array(basicCVSchema),
   },
   async (query: string) => {
     const docs = await ai.retrieve({
@@ -143,7 +154,10 @@ export const searchCVFlow = ai.defineFlow(
         collection: 'cv-embeddings', // Optional: Override default collection
       },
     });
-    logger.info(`Found ${docs.length} documents`, docs);
+    logger.info(`Found ${docs.length} documents`, docs.map((doc) => ({
+      content: doc.text,
+      metadata: doc.metadata
+    })));
   }
 );
 
@@ -152,4 +166,11 @@ export const indexCV = onCallGenkit(
     secrets: [apiKey],
   },
   indexCVFlow
+);
+
+export const searchCV = onCallGenkit(
+  {
+    secrets: [apiKey],
+  },
+  searchCVFlow
 );

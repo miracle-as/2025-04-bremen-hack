@@ -14,8 +14,8 @@ import "./firebase-admin";
 import {onRequest} from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 import {menuSuggestion} from "./genkit-sample";
-import {indexCV, searchCVFlow} from "./cv-indexer";
-import {storeEmployeeDataFlow} from "./employee-storage";
+import {indexCV, searchCV} from "./cv-indexer";
+import {storeEmployeeData} from "./employee-storage";
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
@@ -35,6 +35,6 @@ export const example = menuSuggestion;
 
 export const CVIndexer = indexCV;
 
-export const searchCV = searchCVFlow;
+export const CVSearch = searchCV;
 
-export const storeEmployeeData = storeEmployeeDataFlow;
+export const storeEmployee = storeEmployeeData;
