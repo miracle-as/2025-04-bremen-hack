@@ -19,6 +19,19 @@
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+
+  /* Bremen hack colors */
+  /* Primary colors */
+  --primary-dark: #146F87;  /* STORE BOBLER - BLÅGRØN PANTONE 7477 C - RGB 20.87.100 */
+  --primary: #38939F;       /* LILLE BOBLE - BLÅGRØN PANTONE 5483 C - RGB 56.147.155 */
+  --primary-light: #0092A5; /* ACCENTFARVER - BLÅGRØN PANTONE 7474 C - RGB 0.146.159 */
+  
+  /* Accent colors */
+  --accent-red: #E00060;    /* RUBIN RØD - PANTONE RUBINE RED - RGB 224.29.92 */
+  --accent-orange: #F4783C; /* ORANGE - PANTONE 172 C - RGB 244.119.53 */
+  
+  /* Background color */
+  --background-gray: #E8E7E7; /* GRÅ - PANTONE COOL GRAY 2 C - RGB 232.231.230 */
 }
 
 /* semantic color variables for this project */
@@ -26,6 +39,7 @@
   --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
   --color-background-mute: var(--vt-c-white-mute);
+  --color-background-gray: var(--background-gray);
 
   --color-border: var(--vt-c-divider-light-2);
   --color-border-hover: var(--vt-c-divider-light-1);
@@ -34,6 +48,14 @@
   --color-text: var(--vt-c-text-light-1);
 
   --section-gap: 160px;
+
+  /* Custom semantic colors */
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-light: var(--primary-light);
+  
+  --color-accent-red: var(--accent-red);
+  --color-accent-orange: var(--accent-orange);
 }
 
 @media (prefers-color-scheme: dark) {

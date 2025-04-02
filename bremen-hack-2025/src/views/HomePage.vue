@@ -1,5 +1,6 @@
 <script setup>
 import { RouterLink } from 'vue-router'
+import ColorPalette from '../components/ColorPalette.vue'
 </script>
 
 <template>
@@ -11,7 +12,15 @@ import { RouterLink } from 'vue-router'
       <RouterLink to="/upload" class="action-button">
         Go to File Upload
       </RouterLink>
+      <a href="#" class="action-button accent-red">
+        Accent Red Button
+      </a>
+      <a href="#" class="action-button accent-orange">
+        Accent Orange Button
+      </a>
     </div>
+    
+    <ColorPalette />
   </div>
 </template>
 
@@ -25,7 +34,7 @@ import { RouterLink } from 'vue-router'
 
 h1 {
   font-size: 2.5rem;
-  color: #333;
+  color: var(--color-primary-dark);
   margin-bottom: 1rem;
 }
 
@@ -37,11 +46,15 @@ p {
 
 .actions {
   margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .action-button {
   display: inline-block;
-  background-color: #4CAF50;
+  background-color: var(--color-primary);
   color: white;
   padding: 0.75rem 1.5rem;
   border-radius: 4px;
@@ -51,6 +64,22 @@ p {
 }
 
 .action-button:hover {
-  background-color: #3e8e41;
+  background-color: var(--color-primary-dark);
+}
+
+.action-button.accent-red {
+  background-color: var(--color-accent-red);
+}
+
+.action-button.accent-red:hover {
+  background-color: #c0004f;
+}
+
+.action-button.accent-orange {
+  background-color: var(--color-accent-orange);
+}
+
+.action-button.accent-orange:hover {
+  background-color: #e0682c;
 }
 </style> 

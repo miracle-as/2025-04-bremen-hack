@@ -26,7 +26,7 @@ import FileUpload from '../components/FileUpload.vue'
 
 h1 {
   text-align: center;
-  color: #333;
+  color: var(--color-primary-dark);
   margin-bottom: 2rem;
 }
 
@@ -37,17 +37,17 @@ h1 {
 
 .back-link {
   display: inline-block;
-  color: #4CAF50;
+  color: var(--color-primary);
   text-decoration: none;
   font-weight: bold;
   padding: 0.5rem 1rem;
-  border: 1px solid #4CAF50;
+  border: 1px solid var(--color-primary);
   border-radius: 4px;
   transition: all 0.3s;
 }
 
 .back-link:hover {
-  background-color: #4CAF50;
+  background-color: var(--color-primary);
   color: white;
 }
 </style> 

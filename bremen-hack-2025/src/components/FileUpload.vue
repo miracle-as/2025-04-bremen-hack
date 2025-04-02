@@ -57,14 +57,14 @@ function uploadFile() {
   margin: 0 auto;
   padding: 2rem;
   border-radius: 8px;
-  background-color: #f8f9fa;
+  background-color: var(--color-background-gray);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
   text-align: center;
   margin-bottom: 1.5rem;
-  color: #333;
+  color: var(--color-primary-dark);
 }
 
 .upload-container {
@@ -101,7 +101,7 @@ h2 {
 
 .upload-button {
   padding: 0.75rem 1.25rem;
-  background-color: #4CAF50;
+  background-color: var(--color-primary);
   color: white;
   border: none;
   border-radius: 4px;
@@ -111,7 +111,7 @@ h2 {
 }
 
 .upload-button:hover:not(:disabled) {
-  background-color: #3e8e41;
+  background-color: var(--color-primary-dark);
 }
 
 .upload-button:disabled {
@@ -121,7 +121,7 @@ h2 {
 
 .success-message {
   text-align: center;
-  color: #4CAF50;
+  color: var(--color-primary);
   margin-top: 1rem;
   font-weight: bold;
 }
