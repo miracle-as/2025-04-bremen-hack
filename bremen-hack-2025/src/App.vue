@@ -1,35 +1,22 @@
 <script setup>
-// App.vue with routing
+// App.vue with routing and Vuetify
+import AppNavbar from './components/AppNavbar.vue';
 </script>
 
 <template>
-  <div class="app-container">
-    <div class="app">
-      <RouterView />
-    </div>
-  </div>
+  <v-app>
+    <AppNavbar />
+
+    <v-main>
+      <v-container>
+        <RouterView />
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
 
 <style>
-.app-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.app {
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 0 1rem;
-  font-weight: normal;
-}
-
-a {
-  text-decoration: none;
-  transition: 0.4s;
-}
-
+/* Global styles */
 html, body {
   margin: 0;
   padding: 0;
@@ -37,9 +24,10 @@ html, body {
   height: 100%;
 }
 
-@media (max-width: 768px) {
-  .app {
-    padding: 0 0.5rem;
-  }
+a {
+  text-decoration: none;
+  transition: 0.4s;
 }
+
+/* Let Vuetify handle most of the styling */
 </style>

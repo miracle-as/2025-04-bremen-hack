@@ -6,6 +6,8 @@ import { ref as storageRef, listAll, getDownloadURL, deleteObject } from 'fireba
 const files = ref([])
 const loading = ref(true)
 const error = ref(null)
+const deleteDialog = ref(false)
+const fileToDelete = ref(null)
 
 // Function to fetch files from Firebase Storage
 async function fetchFiles() {
@@ -56,17 +58,27 @@ async function fetchFiles() {
   }
 }
 
+// Function to open the delete confirmation dialog
+function confirmDelete(file) {
+  fileToDelete.value = file
+  deleteDialog.value = true
+}
+
 // Function to delete a file
-async function deleteFile(file) {
-  if (!confirm(`Are you sure you want to delete ${file.name}?`)) return
+async function deleteFile() {
+  if (!fileToDelete.value) return
   
   try {
-    await deleteObject(file.ref)
+    await deleteObject(fileToDelete.value.ref)
     // Remove from the list
-    files.value = files.value.filter(f => f.fullPath !== file.fullPath)
+    files.value = files.value.filter(f => f.fullPath !== fileToDelete.value.fullPath)
+    // Show a success snackbar or message if needed
   } catch (err) {
     console.error("Error deleting file:", err)
-    alert(`Failed to delete ${file.name}. Please try again.`)
+    error.value = `Failed to delete ${fileToDelete.value.name}. Please try again.`
+  } finally {
+    deleteDialog.value = false
+    fileToDelete.value = null
   }
 }
 
@@ -75,151 +87,133 @@ onMounted(fetchFiles)
 </script>
 
 <template>
-  <div class="file-list">
-    <div class="file-list-header">
-      <h2>Uploaded Files</h2>
-      <button @click="fetchFiles" class="refresh-button">
+  <v-card class="mx-auto mt-5 pa-5">
+    <v-card-title class="d-flex align-center justify-space-between">
+      <span>Uploaded Files</span>
+      <v-btn
+        color="secondary"
+        size="small"
+        @click="fetchFiles"
+        :loading="loading"
+        prepend-icon="mdi-refresh"
+        variant="outlined"
+      >
         Refresh
-      </button>
-    </div>
+      </v-btn>
+    </v-card-title>
     
-    <div v-if="loading" class="loading">
-      <p>Loading files...</p>
-    </div>
+    <v-card-text>
+      <v-progress-circular 
+        v-if="loading" 
+        indeterminate 
+        color="primary" 
+        class="mx-auto d-block my-6"
+      ></v-progress-circular>
+      
+      <v-alert
+        v-else-if="error"
+        type="error"
+        variant="tonal"
+        class="my-3"
+      >
+        {{ error }}
+      </v-alert>
+      
+      <v-alert
+        v-else-if="files.length === 0"
+        type="info"
+        variant="tonal"
+        class="my-3"
+      >
+        No files have been uploaded yet.
+      </v-alert>
+      
+      <div v-else>
+        <v-list lines="two">
+          <v-list-item
+            v-for="file in files"
+            :key="file.fullPath"
+            class="my-1"
+            rounded
+            variant="outlined"
+          >
+            <template v-slot:prepend>
+              <v-icon icon="mdi-file-document-outline"></v-icon>
+            </template>
+            
+            <v-list-item-title>
+              {{ file.name }}
+            </v-list-item-title>
+            
+            <template v-slot:append>
+              <div class="d-flex">
+                <v-btn
+                  :href="file.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  color="primary"
+                  size="small"
+                  variant="text"
+                  class="me-2"
+                  prepend-icon="mdi-eye"
+                >
+                  View
+                </v-btn>
+                
+                <v-btn
+                  @click="confirmDelete(file)"
+                  color="error"
+                  size="small"
+                  variant="text"
+                  prepend-icon="mdi-delete"
+                >
+                  Delete
+                </v-btn>
+              </div>
+            </template>
+          </v-list-item>
+        </v-list>
+      </div>
+    </v-card-text>
     
-    <div v-else-if="error" class="error">
-      <p>{{ error }}</p>
-    </div>
-    
-    <div v-else-if="files.length === 0" class="empty">
-      <p>No files have been uploaded yet.</p>
-    </div>
-    
-    <ul v-else class="files">
-      <li v-for="file in files" :key="file.fullPath" class="file-item">
-        <div class="file-info">
-          <span class="file-name">{{ file.name }}</span>
-        </div>
-        <div class="file-actions">
-          <a :href="file.url" target="_blank" rel="noopener noreferrer" class="view-button">View</a>
-          <button @click="deleteFile(file)" class="delete-button">Delete</button>
-        </div>
-      </li>
-    </ul>
-  </div>
+    <!-- Delete Confirmation Dialog -->
+    <v-dialog
+      v-model="deleteDialog"
+      max-width="500"
+    >
+      <v-card>
+        <v-card-title class="text-h5">
+          Confirm Deletion
+        </v-card-title>
+        
+        <v-card-text v-if="fileToDelete">
+          Are you sure you want to delete <strong>{{ fileToDelete.name }}</strong>?
+          <br>
+          This action cannot be undone.
+        </v-card-text>
+        
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="grey-darken-1"
+            variant="text"
+            @click="deleteDialog = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            color="error"
+            variant="flat"
+            @click="deleteFile"
+          >
+            Delete
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-card>
 </template>
 
 <style scoped>
-.file-list {
-  margin: 2rem auto;
-  padding: 1.5rem;
-  border-radius: 8px;
-  background-color: white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.file-list-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-h2 {
-  color: var(--color-primary-dark);
-  margin: 0;
-}
-
-.refresh-button {
-  background-color: var(--color-primary-light);
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s;
-}
-
-.refresh-button:hover {
-  filter: brightness(1.1);
-}
-
-.loading, .error, .empty {
-  text-align: center;
-  padding: 1.5rem 0;
-  color: #666;
-}
-
-.error {
-  color: var(--color-accent-red);
-}
-
-.files {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.file-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem;
-  border-radius: 4px;
-  background-color: var(--color-background-gray);
-  margin-bottom: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.file-name {
-  font-weight: 500;
-  word-break: break-all;
-}
-
-.file-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.view-button, .delete-button {
-  padding: 0.4rem 0.75rem;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 0.85rem;
-  transition: all 0.3s;
-}
-
-.view-button {
-  background-color: var(--color-primary);
-  color: white;
-  text-decoration: none;
-}
-
-.view-button:hover {
-  background-color: var(--color-primary-dark);
-}
-
-.delete-button {
-  background-color: var(--color-accent-red);
-  color: white;
-  border: none;
-}
-
-.delete-button:hover {
-  filter: brightness(0.9);
-}
-
-@media (max-width: 480px) {
-  .file-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .file-actions {
-    margin-top: 0.75rem;
-    align-self: flex-end;
-  }
-}
+/* All styling is handled by Vuetify */
 </style> 
