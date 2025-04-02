@@ -9,7 +9,7 @@ import {getFirestore} from "firebase-admin/firestore";
 const db = getFirestore();
 
 // Function to store employee data in Firestore
-export const storeEmployeeDataFlow = onCall(async (request) => {
+export const storeEmployeeData = onCall(async (request) => {
   try {
     const {employeeName, employeeEmail, fileName, fileUrl} = request.data;
     
