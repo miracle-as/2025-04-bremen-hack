@@ -4,13 +4,12 @@ import FileList from '../components/FileList.vue'
 </script>
 
 <template>
+  <v-container class="pt-8 pb-4">
+    <h1 class="text-h3 font-weight-black text-center">Upload CV</h1>
+    <p class="text-subtitle-1 mt-2 text-center">Upload a CV to get started</p>
+  </v-container>
   <v-container>
-    <h1 class="my-8">CV</h1>
     <FileUpload />
     <FileList />
   </v-container>
 </template>
-
-<style scoped>
-/* All styling is handled by Vuetify */
-</style> 
