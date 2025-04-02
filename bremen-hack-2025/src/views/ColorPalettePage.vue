@@ -31,6 +31,7 @@ import ColorPalette from '../components/ColorPalette.vue'
 
 <style scoped>
 .colors-page {
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;

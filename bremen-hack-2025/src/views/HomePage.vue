@@ -20,9 +20,10 @@ import { RouterLink } from 'vue-router'
 
 <style scoped>
 .home-page {
-  max-width: 100%;
+  width: 100%;
+  max-width: 960px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2rem 1rem;
   text-align: center;
   display: flex;
   flex-direction: column;
