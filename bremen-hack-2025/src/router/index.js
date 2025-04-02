@@ -13,7 +13,7 @@ const router = createRouter({
     },
     {
       path: '/upload',
-      name: 'upload',
+      name: 'CV',
       component: UploadPage
     },
     {

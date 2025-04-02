@@ -115,7 +115,7 @@ function uploadFile() {
 <template>
   <v-card class="pa-5">
     <v-card-title class="d-flex align-center justify-space-between">
-      <span>Upload Your CV</span>
+      <span>Upload CV</span>
     </v-card-title>
     
     <v-card-text>

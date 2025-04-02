@@ -89,7 +89,7 @@ onMounted(fetchFiles)
 <template>
   <v-card class="mx-auto mt-5 pa-5">
     <v-card-title class="d-flex align-center justify-space-between">
-      <span>Uploaded Files</span>
+      <span>Files</span>
       <v-btn
         color="secondary"
         size="small"
