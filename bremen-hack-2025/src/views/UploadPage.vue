@@ -6,7 +6,7 @@ import FileList from '../components/FileList.vue'
 
 <template>
   <v-container>
-    <h1 class="my-8">File Upload</h1>
+    <h1 class="my-8">CV Upload</h1>
     <FileUpload />
     <FileList />
   </v-container>
