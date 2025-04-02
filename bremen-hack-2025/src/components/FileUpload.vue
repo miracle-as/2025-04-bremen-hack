@@ -126,7 +126,7 @@ function uploadFile() {
 
 <style scoped>
 .file-upload {
-  max-width: 500px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
   border-radius: 8px;

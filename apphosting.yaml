@@ -1,0 +1,29 @@
+# Settings for Backend (on Cloud Run).
+# See https://firebase.google.com/docs/app-hosting/configure#cloud-run
+runConfig:
+  minInstances: 1
+  maxInstances: 10
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 512
+
+# Environment variables and secrets.
+env:
+  # Configure environment variables.
+  - variable: NODE_ENV
+    value: production
+    availability:
+      - RUNTIME
+  - variable: VUE_APP_FIREBASE_PROJECT_ID
+    value: bremen-hack-2025-04
+    availability:
+      - RUNTIME
+  - variable: VUE_APP_FIREBASE_STORAGE_BUCKET
+    value: bremen-hack-2025-04.firebasestorage.app
+    availability:
+      - RUNTIME
+
+# Grant access to secrets in Cloud Secret Manager.
+# See https://firebase.google.com/docs/app-hosting/configure#secret-parameters
+# - variable: MY_SECRET
+#   secret: mySecretRef
