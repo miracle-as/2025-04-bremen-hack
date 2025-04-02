@@ -3,15 +3,15 @@ import { RouterLink } from 'vue-router'
 </script>
 
 <template>
-  <div class="home-page">
+  <div class="home-container">
     <h1>Bremen Hack 2025</h1>
     <p>Welcome to the Bremen Hack 2025 project</p>
     
     <div class="actions">
-      <RouterLink to="/upload" class="action-button">
+      <RouterLink to="/upload" class="action-button accent-red">
         Go to File Upload
       </RouterLink>
-      <RouterLink to="/colors" class="action-button accent-red">
+      <RouterLink to="/colors" class="action-button secondary">
         View Color Palette
       </RouterLink>
     </div>
@@ -19,16 +19,9 @@ import { RouterLink } from 'vue-router'
 </template>
 
 <style scoped>
-.home-page {
-  width: 100%;
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
+.home-container {
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 80vh;
+  width: 100%;
 }
 
 h1 {
@@ -53,18 +46,24 @@ p {
 
 .action-button {
   display: inline-block;
-  background-color: var(--color-primary);
   color: white;
   padding: clamp(0.75rem, 2vw, 1rem) clamp(1.25rem, 3vw, 2rem);
   border-radius: 4px;
   text-decoration: none;
   font-weight: bold;
-  transition: background-color 0.3s;
+  transition: all 0.3s;
   font-size: clamp(0.9rem, 1.5vw, 1.1rem);
 }
 
-.action-button:hover {
+.action-button.secondary {
+  background-color: transparent;
+  color: var(--color-primary-dark);
+  border: 2px solid var(--color-primary-dark);
+}
+
+.action-button.secondary:hover {
   background-color: var(--color-primary-dark);
+  color: white;
 }
 
 .action-button.accent-red {

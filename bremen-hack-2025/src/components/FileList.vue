@@ -111,11 +111,10 @@ onMounted(fetchFiles)
 
 <style scoped>
 .file-list {
-  max-width: 1200px;
   margin: 2rem auto;
   padding: 1.5rem;
   border-radius: 8px;
-  background-color: var(--color-background-gray);
+  background-color: white;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -168,7 +167,7 @@ h2 {
   align-items: center;
   padding: 0.75rem;
   border-radius: 4px;
-  background-color: white;
+  background-color: var(--color-background-gray);
   margin-bottom: 0.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }

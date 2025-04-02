@@ -5,35 +5,20 @@ import FileList from '../components/FileList.vue'
 </script>
 
 <template>
-  <div class="upload-page">
-    <h1>File Upload</h1>
-    
-    <FileUpload />
-    
-    <FileList />
-    
-    <div class="navigation">
-      <RouterLink to="/" class="back-link">
-        Back to Home
-      </RouterLink>
-      <RouterLink to="/colors" class="back-link accent">
-        View Colors
-      </RouterLink>
-    </div>
+  <h1>File Upload</h1>
+  
+  <FileUpload />
+  
+  <FileList />
+  
+  <div class="navigation">
+    <RouterLink to="/" class="back-link">
+      Back to Home
+    </RouterLink>
   </div>
 </template>
 
 <style scoped>
-.upload-page {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: clamp(1rem, 5vw, 2rem);
-  display: flex;
-  flex-direction: column;
-  min-height: 80vh;
-}
-
 h1 {
   text-align: center;
   color: var(--color-primary-dark);

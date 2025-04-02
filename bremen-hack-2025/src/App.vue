@@ -19,7 +19,7 @@
 
 .app {
   width: 100%;
-  max-width: 1600px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 0 1rem;
   font-weight: normal;

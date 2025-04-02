@@ -126,16 +126,13 @@ function uploadFile() {
 
 <style scoped>
 .file-upload {
-  max-width: 1200px;
-  margin: 0 auto;
   padding: 2rem;
   border-radius: 8px;
-  background-color: var(--color-background-gray);
+  background-color: white;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
-  text-align: center;
   margin-bottom: 1.5rem;
   color: var(--color-primary-dark);
 }
