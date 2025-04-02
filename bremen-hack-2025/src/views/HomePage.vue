@@ -5,36 +5,33 @@
       <div class="particle-overlay" ref="particles"></div>
     </div>
     <div class="home-page">
-      <v-container class="text-center content-overlay">
+      <v-container class="text-center">
+        <h1 class="text-h3 font-weight-black" ref="mainTitle">AI-HackDay 2025</h1>
+        <p class="text-subtitle-1 tagline" ref="tagline">Where innovation meets creativity</p>
+
         <v-row justify="center">
-          <v-col>
-            <h1 class="main-title" ref="mainTitle">Bremen Hack 2025</h1>
-            <p class="tagline" ref="tagline">Where innovation meets creativity</p>
-            <v-row justify="center" class="mt-6">
-              <v-col cols="12" sm="auto" class="pa-2">
-                <v-btn 
-                  to="/upload" 
-                  color="accent" 
-                  class="upload-btn"
-                  size="large"
-                  elevation="4"
-                  ref="uploadBtn"
-                >
-                  <v-icon left class="mr-2">mdi-cloud-upload</v-icon>
-                  File Upload
-                </v-btn>
-              </v-col>
-              <!-- <v-col cols="12" sm="auto" class="pa-2">
-                <v-btn 
-                  to="/colors" 
-                  color="primary" 
-                  variant="outlined"
-                >
-                  Color Palette
-                </v-btn>
-              </v-col> -->
-            </v-row>
+          <v-col cols="12" sm="auto" class="pa-2">
+            <v-btn 
+              to="/upload" 
+              color="accent" 
+              class="upload-btn"
+              size="large"
+              elevation="4"
+              ref="uploadBtn"
+            >
+              <v-icon left class="mr-2">mdi-cloud-upload</v-icon>
+              File Upload
+            </v-btn>
           </v-col>
+          <!-- <v-col cols="12" sm="auto" class="pa-2">
+            <v-btn 
+              to="/colors" 
+              color="primary" 
+              variant="outlined"
+            >
+              Color Palette
+            </v-btn>
+          </v-col> -->
         </v-row>
       </v-container>
     </div>
@@ -93,7 +90,7 @@ export default {
       });
     },
     createParticles() {
-      // Simple particle effect using Bremen Hack colors
+      // Simple particle effect using AI-HackDay colors
       this.particlesContainer = this.$refs.particles;
       this.particlesCount = 80;
       this.particles = [];
@@ -240,15 +237,6 @@ html, body {
   pointer-events: none;
 }
 
-.content-overlay {
-  position: relative;
-  height: 100%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
 .main-title {
   font-size: 5rem !important;
   font-weight: 900 !important;
@@ -259,19 +247,17 @@ html, body {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 2px 10px rgba(56, 147, 159, 0.2);
-  padding-bottom: 0.5rem;
 }
 
 .tagline {
   font-size: 1.5rem;
   font-weight: 300;
-  color: #38939F;
   margin-bottom: 2rem;
   letter-spacing: 1px;
   padding-top: 0.5rem;
   position: relative;
   top: 0;
-  margin-top: 4em;
+  margin-top: 7em;
 }
 
 .upload-btn {
@@ -280,6 +266,7 @@ html, body {
   font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
+  margin-top: 2em;
 }
 
 .upload-btn:hover {

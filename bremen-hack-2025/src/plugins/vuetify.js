@@ -7,7 +7,7 @@ import '@mdi/font/css/materialdesignicons.css'
 // Define the Bremen Hack colors from the base.css
 const bremenHackColors = {
   primary: '#38939F',     // --primary
-  accent: '#E00060',      // --accent-orange
+  accent: '#E00060',      // --accent
   secondary: '#0092A5',   // --primary-light
   error: '#E01D5A',       // --accent-red
   warning: '#F4783C',     // --accent-orange
