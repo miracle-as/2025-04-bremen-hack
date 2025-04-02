@@ -10,9 +10,8 @@
 
 <style>
 .app {
-  max-width: 1280px;
+  width: 100%;
   margin: 0 auto;
-  padding: 2rem;
   font-weight: normal;
 }
 
@@ -21,10 +20,10 @@ a {
   transition: 0.4s;
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
 }
 </style>

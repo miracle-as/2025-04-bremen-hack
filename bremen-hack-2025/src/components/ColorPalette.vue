@@ -21,8 +21,9 @@ const colors = [
         <div class="color-preview" :style="{backgroundColor: `var(${color.var})`}"></div>
         <div class="color-info">
           <h3>{{ color.name }}</h3>
-          <p>{{ color.pantone }}</p>
-          <p>{{ color.rgb }}</p>
+          <p class="pantone">{{ color.pantone }}</p>
+          <p class="rgb">{{ color.rgb }}</p>
+          <p class="var-name">{{ color.var }}</p>
         </div>
       </div>
     </div>
@@ -31,7 +32,7 @@ const colors = [
 
 <style scoped>
 .color-palette {
-  max-width: 800px;
+  max-width: 100%;
   margin: 2rem auto;
   padding: 1.5rem;
   background-color: white;
@@ -43,11 +44,12 @@ h2 {
   text-align: center;
   color: var(--color-primary-dark);
   margin-bottom: 1.5rem;
+  font-size: clamp(1.5rem, 3vw, 1.8rem);
 }
 
 .color-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
 }
 
@@ -57,27 +59,61 @@ h2 {
   border-radius: 6px;
   overflow: hidden;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.color-swatch:hover {
+  transform: translateY(-5px);
 }
 
 .color-preview {
-  height: 100px;
+  height: 120px;
   width: 100%;
 }
 
 .color-info {
-  padding: 1rem;
+  padding: 1.2rem;
   background-color: white;
 }
 
 .color-info h3 {
   margin: 0 0 0.5rem;
-  font-size: 1.1rem;
+  font-size: clamp(1rem, 2vw, 1.2rem);
   font-weight: 600;
 }
 
 .color-info p {
-  margin: 0.2rem 0;
-  font-size: 0.9rem;
+  margin: 0.3rem 0;
+  font-size: clamp(0.8rem, 1.5vw, 0.9rem);
   color: #666;
+}
+
+.var-name {
+  font-family: monospace;
+  background-color: #f5f5f5;
+  padding: 0.3rem 0.5rem;
+  border-radius: 3px;
+  margin-top: 0.6rem !important;
+  font-size: clamp(0.75rem, 1.5vw, 0.85rem) !important;
+}
+
+@media (max-width: 768px) {
+  .color-palette {
+    padding: 1rem;
+  }
+  
+  .color-grid {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .color-preview {
+    height: 100px;
+  }
+  
+  .color-info {
+    padding: 1rem;
+  }
 }
 </style> 

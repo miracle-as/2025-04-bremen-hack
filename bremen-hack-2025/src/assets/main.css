@@ -3,7 +3,7 @@
 #app {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   font-weight: normal;
 }
 
@@ -12,7 +12,6 @@ a,
   text-decoration: none;
   color: var(--color-primary);
   transition: 0.4s;
-  padding: 3px;
 }
 
 @media (hover: hover) {
@@ -30,6 +29,12 @@ a,
   #app {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  #app {
+    padding: 1rem;
   }
 }
