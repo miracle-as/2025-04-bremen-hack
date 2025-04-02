@@ -4,7 +4,7 @@ import "./firebase-admin";
 
 // Import the Genkit core libraries and plugins.
 import {genkit, z} from "genkit";
-import {googleAI, textEmbedding004} from "@genkit-ai/googleai";
+import {gemini, googleAI, textEmbedding004} from "@genkit-ai/googleai";
 import {getStorage} from "firebase-admin/storage";
 import {FieldValue, getFirestore} from "firebase-admin/firestore";
 import {Document} from "genkit/retriever";
@@ -150,7 +150,7 @@ export const searchCVFlow = ai.defineFlow(
   {
     name: 'searchCVFlow',
     inputSchema: z.string().describe('Search query'),
-    outputSchema: z.void(),
+    outputSchema: z.array(z.any()).describe('Search results'),
   },
   async (query: string) => {
     const docs = await ai.retrieve({
@@ -163,6 +163,35 @@ export const searchCVFlow = ai.defineFlow(
       },
     });
     logger.info(`Found ${docs.length} documents`, docs.map((doc) => doc.toJSON()));
+        const summaries = [];
+        const employees = new Set<any>();
+        docs.forEach((doc) => {
+          const employee = doc.metadata;
+          if (employee?.email && !Array.from(employees).some((e) => e.email === employee?.email)) {
+            employees.add(doc.metadata);
+          }
+        });
+        logger.info(`Unique employee emails: ${Array.from(employees).map((e) => e.email).join(', ')}`);
+
+        for (const employee of employees) {
+        const matchingDocs = await db.collection('cv-embeddings').where('email', '==', employee.email).get();
+        const matchingDocsArray = matchingDocs.docs.map((doc) => doc.data());
+        const matchingDocsText = matchingDocsArray.map((doc) => Document.fromText(doc.text, { name: doc.metadata?.name, email: doc.metadata?.email, fileName: doc.metadata?.fileName, uploadDate: doc.metadata?.uploadDate, distance: employee.distance }));
+
+        const { text } = await ai.generate({
+          model: gemini('gemini-1.5-flash'),
+          prompt: `Make a short summary of the following CV`,
+          docs: matchingDocsText,
+        });
+        summaries.push({
+          name: employee.name,
+          email: employee.email,
+          distance: employee.distance,
+          summary: text,
+        });
+        }
+
+    return summaries;
   }
 );
 
