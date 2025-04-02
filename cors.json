@@ -1,0 +1,8 @@
+[
+  {
+    "origin": ["http://localhost:5173", "https://bremen-hack-2025-04.web.app", "https://bremen-hack-2025-04.firebaseapp.com"],
+    "method": ["GET", "POST", "PUT", "DELETE", "HEAD"],
+    "maxAgeSeconds": 3600,
+    "responseHeader": ["Content-Type", "Authorization", "Content-Length", "User-Agent", "x-goog-resumable"]
+  }
+] 
