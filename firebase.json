@@ -13,7 +13,7 @@
     }
   ],
   "hosting": {
-    "source": "bremen-hack-2025",
+    "public": "frontend/dist",
     "ignore": [
       "firebase.json",
       "**/.*",
