@@ -1,5 +1,26 @@
 # 2025-04-bremen-hack
 
+## Deltagere
+
+* Mark.Berthelsen@knowit.dk
+* Benny.Milt.Mikkelsen@knowit.dk
+* Olav.Kjaer@knowit.dk
+* Anders.Buron@knowit.dk
+* Ulrik.Knudsen@knowit.dk
+* Rikke.Eie@knowit.dk
+* Michael.Hjorth@knowit.dk
+
+Facillitering:
+* nicolai.henriksen@knowit.dk
+
+## Mål
+
+1. Læs og fortolk CV uanset format eller stil, gem resultatet i struktureret format, fx JSON
+2. Tag det strukturerede format og vis det i format beskrevet i fritekst
+3. Brug fritekst til at søge i gemte CV'er
+
+## AI genereret støj herefter :-)
+
 <div align="center">
   
   ![Bremen Hack 2025 Logo](https://via.placeholder.com/150x150?text=Bremen+Hack)
